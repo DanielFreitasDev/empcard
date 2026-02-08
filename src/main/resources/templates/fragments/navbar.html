@@ -9,9 +9,14 @@
         </a>
         <div class="usuario">
             <span sec:authentication="name">USUARIO</span>
-            <form th:action="@{/logout}" method="post">
-                <button class="btn btn-secondary" type="submit">Sair</button>
-            </form>
+            <div class="acoes-usuario">
+                <button id="alternadorTema" class="btn btn-theme" type="button" aria-label="Ativar tema escuro">
+                    Ativar tema escuro
+                </button>
+                <form th:action="@{/logout}" method="post">
+                    <button class="btn btn-secondary" type="submit">Sair</button>
+                </form>
+            </div>
         </div>
     </div>
 

@@ -1,6 +1,83 @@
 (function () {
     'use strict';
 
+    const CHAVE_TEMA = 'empcard-tema';
+    const TEMA_CLARO = 'claro';
+    const TEMA_ESCURO = 'escuro';
+
+    /**
+     * Aplica o tema visual e sincroniza o texto do botao para a proxima acao disponivel.
+     * @param {'claro'|'escuro'} temaAtivo tema que sera aplicado na pagina
+     * @param {HTMLButtonElement | null} botaoTema botao de alternancia do tema, quando presente
+     */
+    function aplicarTema(temaAtivo, botaoTema) {
+        document.documentElement.setAttribute('data-tema', temaAtivo);
+
+        if (!botaoTema) {
+            return;
+        }
+
+        const proximoTema = temaAtivo === TEMA_ESCURO ? TEMA_CLARO : TEMA_ESCURO;
+        const textoBotao = proximoTema === TEMA_ESCURO ? 'Ativar tema escuro' : 'Ativar tema claro';
+        botaoTema.textContent = textoBotao;
+        botaoTema.setAttribute('aria-label', textoBotao);
+    }
+
+    /**
+     * Resolve o tema inicial priorizando:
+     * 1) tema ja aplicado no HTML, 2) tema salvo no localStorage, 3) preferencia do sistema.
+     * @returns {'claro'|'escuro'} tema inicial
+     */
+    function obterTemaInicial() {
+        const temaNoHtml = document.documentElement.getAttribute('data-tema');
+        if (temaNoHtml === TEMA_CLARO || temaNoHtml === TEMA_ESCURO) {
+            return temaNoHtml;
+        }
+
+        try {
+            const temaSalvo = localStorage.getItem(CHAVE_TEMA);
+            if (temaSalvo === TEMA_CLARO || temaSalvo === TEMA_ESCURO) {
+                return temaSalvo;
+            }
+        } catch (erro) {
+            // Se storage estiver indisponivel, segue com preferencia do sistema.
+        }
+
+        return window.matchMedia('(prefers-color-scheme: dark)').matches ? TEMA_ESCURO : TEMA_CLARO;
+    }
+
+    /**
+     * Configura alternancia de tema para todo o frontend.
+     * O template de PDF nao e afetado, pois utiliza CSS proprio e nao carrega este script.
+     */
+    function configurarTema() {
+        const botaoTema = document.querySelector('#alternadorTema');
+
+        function salvarTema(tema) {
+            try {
+                localStorage.setItem(CHAVE_TEMA, tema);
+            } catch (erro) {
+                // Nao interrompe a navegacao caso o browser bloqueie persistencia local.
+            }
+        }
+
+        const temaInicial = obterTemaInicial();
+        aplicarTema(temaInicial, botaoTema);
+
+        if (!botaoTema) {
+            return;
+        }
+
+        botaoTema.addEventListener('click', () => {
+            const temaAtual = document.documentElement.getAttribute('data-tema') === TEMA_ESCURO
+                ? TEMA_ESCURO
+                : TEMA_CLARO;
+            const proximoTema = temaAtual === TEMA_ESCURO ? TEMA_CLARO : TEMA_ESCURO;
+            aplicarTema(proximoTema, botaoTema);
+            salvarTema(proximoTema);
+        });
+    }
+
     /**
      * Remove tudo que nao for digito para simplificar mascaras e validacoes.
      * @param {string} valor texto de entrada
@@ -290,6 +367,7 @@
         });
     }
 
+    configurarTema();
     configurarMascaras();
     configurarMaiusculas();
     configurarViaCep();

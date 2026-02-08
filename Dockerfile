@@ -14,7 +14,7 @@ RUN ./mvnw -q -DskipTests clean package
 FROM eclipse-temurin:21-jre-jammy
 WORKDIR /app
 
-COPY --from=build /app/target/empcard-0.0.1-SNAPSHOT.jar app.jar
+COPY --from=build /app/target/empcard-1.0.0.jar app.jar
 
 ENV JAVA_OPTS=""
 EXPOSE 8080

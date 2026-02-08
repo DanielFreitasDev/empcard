@@ -4,6 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title th:text="${titulo} + ' | EmpCard'">EmpCard</title>
+    <script>
+        (function definirTemaInicial() {
+            const CHAVE_TEMA = 'empcard-tema';
+            const TEMA_CLARO = 'claro';
+            const TEMA_ESCURO = 'escuro';
+
+            try {
+                const temaSalvo = window.localStorage.getItem(CHAVE_TEMA);
+                if (temaSalvo === TEMA_CLARO || temaSalvo === TEMA_ESCURO) {
+                    document.documentElement.setAttribute('data-tema', temaSalvo);
+                    return;
+                }
+            } catch (erro) {
+                // Falhas de acesso ao storage nao devem impedir o carregamento do frontend.
+            }
+
+            const prefereEscuro = window.matchMedia
+                && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            document.documentElement.setAttribute('data-tema', prefereEscuro ? TEMA_ESCURO : TEMA_CLARO);
+        })();
+    </script>
     <link rel="stylesheet" th:href="@{/css/app.css}">
 </head>
 </html>
