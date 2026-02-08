@@ -1,7 +1,9 @@
 # Repository Guidelines
 
 ## Project Structure & Module Organization
+
 This is a Spring Boot 3.5 (Java 21) Maven project.
+
 - `src/main/java/io/freitas/empcard`: application code (entry point currently in `EmpcardApplication.java`).
 - `src/main/resources`: runtime config (`application*.properties`), environment banners, and future web/static assets.
 - `src/main/resources/db/migration`: Flyway SQL migrations (`V<version>__<description>.sql`).
@@ -9,7 +11,9 @@ This is a Spring Boot 3.5 (Java 21) Maven project.
 - Root build files: `pom.xml`, `mvnw`, `mvnw.cmd`.
 
 ## Build, Test, and Development Commands
+
 Use the Maven wrapper so everyone runs the same Maven version.
+
 - `./mvnw clean verify`: compile, run tests, and build artifacts.
 - `./mvnw test`: run tests only.
 - `./mvnw spring-boot:run -Pdev`: run locally with the `dev` profile.
@@ -17,6 +21,7 @@ Use the Maven wrapper so everyone runs the same Maven version.
 - `./mvnw spring-boot:build-image`: build an OCI image via Spring Boot plugin.
 
 ## Coding Style & Naming Conventions
+
 - Java version: **21**.
 - Package names are lowercase (e.g., `io.freitas.empcard.<feature>`).
 - Class names: `PascalCase`; methods/fields: `camelCase`; constants: `UPPER_SNAKE_CASE`.
@@ -24,21 +29,26 @@ Use the Maven wrapper so everyone runs the same Maven version.
 - No formatter is enforced in `pom.xml`; use your IDE’s Java formatter consistently before committing.
 
 ## Testing Guidelines
+
 - Test stack: JUnit 5 + `spring-boot-starter-test`.
 - Mirror production package structure under `src/test/java`.
 - Name test classes with `*Tests` (example: `EmpcardApplicationTests`).
 - For DB-related tests, run with explicit datasource variables rather than hardcoding secrets.
 
 ## Commit & Pull Request Guidelines
+
 Current history is minimal (`Commit inicial`), so adopt a clear forward standard.
+
 - Commit format: `<type>(<scope>): <imperative summary>` (example: `feat(auth): add login endpoint`).
 - Keep commits focused and logically grouped.
 - PRs should include: objective, key changes, test evidence (`./mvnw test` output), and linked issue/task.
 - Include screenshots for UI/Thymeleaf changes and note any new env vars or Flyway migrations.
 
 ## Security & Configuration Tips
+
 - Do not commit credentials.
-- Production expects environment variables (`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`, `SPRING_DATASOURCE_PASSWORD`, `SPRING_PROFILES_ACTIVE=prod`).
+- Production expects environment variables (`SPRING_DATASOURCE_URL`, `SPRING_DATASOURCE_USERNAME`,
+  `SPRING_DATASOURCE_PASSWORD`, `SPRING_PROFILES_ACTIVE=prod`).
 - Keep schema changes versioned in Flyway migrations only.
 
 ## Language & Documentation Guidelines

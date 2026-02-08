@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Relatório por Pessoa')}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <section class="card">
+            <h1 class="page-title">Relatório analítico por pessoa</h1>
+            <p class="page-subtitle">Consolidação mensal por cartão com compras, pagamentos, juros e multa.</p>
+
+            <form method="get" th:action="@{/relatorios/pessoas}" class="grid grid-2" style="margin-top: 0.85rem;">
+                <div class="form-group">
+                    <label for="pessoaId">Pessoa *</label>
+                    <select id="pessoaId" name="pessoaId" class="form-select" required>
+                        <option value="">Selecione</option>
+                        <option th:each="pessoa : ${pessoas}"
+                                th:value="${pessoa.id}"
+                                th:selected="${pessoa.id == pessoaIdSelecionada}"
+                                th:text="${pessoa.nome}"></option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="competenciaTexto">Competência *</label>
+                    <input id="competenciaTexto" name="competenciaTexto" type="month" class="form-control" required
+                           th:value="${competenciaSelecionada}">
+                </div>
+
+                <div class="actions-row" style="grid-column: 1 / -1;">
+                    <button class="btn btn-primary" type="submit">Gerar relatório</button>
+                </div>
+            </form>
+        </section>
+
+        <section class="card" th:if="${relatorio != null}" style="margin-top: 0.9rem;">
+            <div class="actions-row" style="justify-content: space-between; align-items: center;">
+                <div>
+                    <h2 class="page-title" style="font-size: 1.05rem; margin: 0;" th:text="${relatorio.nomePessoa}">
+                        PESSOA</h2>
+                    <p class="page-subtitle"
+                       th:text="'CPF: ' + ${relatorio.cpfMascarado} + ' | Competência: ' + ${relatorio.competencia}">
+                        CPF</p>
+                </div>
+                <a class="btn btn-secondary"
+                   th:href="@{/relatorios/pessoas/{id}/pdf(id=${relatorio.pessoaId}, competenciaTexto=${relatorio.competencia})}">
+                    Exportar PDF
+                </a>
+            </div>
+
+            <div th:if="${#lists.isEmpty(relatorio.cartoes)}" class="flash flash-success" style="margin-top: 0.8rem;">
+                Não há movimentação para esta competência.
+            </div>
+
+            <article class="card relatorio-card" th:each="cartaoResumo : ${relatorio.cartoes}"
+                     style="margin-top: 0.9rem;">
+                <h3 style="margin: 0; font-size: 1rem;"
+                    th:text="${cartaoResumo.numeroMascarado + ' - ' + cartaoResumo.bandeira + ' - ' + cartaoResumo.banco}">
+                    CARTÃO</h3>
+                <p class="page-subtitle"
+                   th:text="'Vencimento: ' + ${#temporals.format(cartaoResumo.dataVencimento, 'dd/MM/yyyy')}">
+                    Vencimento</p>
+
+                <div class="grid grid-3" style="margin-top: 0.6rem;">
+                    <div class="detail-item"><strong>Saldo anterior</strong><span
+                            th:text="${@formatacaoService.moeda(cartaoResumo.saldoAnterior)}">R$ 0,00</span></div>
+                    <div class="detail-item"><strong>Total avulso</strong><span
+                            th:text="${@formatacaoService.moeda(cartaoResumo.totalAvulso)}">R$ 0,00</span></div>
+                    <div class="detail-item"><strong>Total parcelado</strong><span
+                            th:text="${@formatacaoService.moeda(cartaoResumo.totalParcelado)}">R$ 0,00</span></div>
+                    <div class="detail-item"><strong>Total fixo</strong><span
+                            th:text="${@formatacaoService.moeda(cartaoResumo.totalFixo)}">R$ 0,00</span></div>
+                    <div class="detail-item"><strong>Juros + multa</strong><span
+                            th:text="${@formatacaoService.moeda(cartaoResumo.jurosMulta)}">R$ 0,00</span></div>
+                    <div class="detail-item"><strong>Total pago</strong><span
+                            th:text="${@formatacaoService.moeda(cartaoResumo.totalPagamentos)}">R$ 0,00</span></div>
+                    <div class="detail-item"><strong>Total devido</strong><span
+                            th:text="${@formatacaoService.moeda(cartaoResumo.totalDevido)}">R$ 0,00</span></div>
+                    <div class="detail-item"><strong>Saldo final</strong><span
+                            th:text="${@formatacaoService.moeda(cartaoResumo.saldoFinal)}">R$ 0,00</span></div>
+                </div>
+
+                <div class="table-wrap" style="margin-top: 0.7rem;">
+                    <table class="table" style="min-width: 520px;">
+                        <thead>
+                        <tr>
+                            <th>Descrição</th>
+                            <th>Tipo</th>
+                            <th>Parcela</th>
+                            <th>Observação</th>
+                            <th class="text-right">Valor</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:if="${#lists.isEmpty(cartaoResumo.itens)}">
+                            <td colspan="5">Sem itens de compra nesta competência.</td>
+                        </tr>
+                        <tr th:each="item : ${cartaoResumo.itens}">
+                            <td th:text="${item.descricao}">DESCRIÇÃO</td>
+                            <td th:text="${item.tipoLancamento}">AVULSO</td>
+                            <td th:text="${item.parcela}">1/1</td>
+                            <td th:text="${item.observacao}">-</td>
+                            <td class="text-right" th:text="${@formatacaoService.moeda(item.valor)}">R$ 0,00</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </article>
+
+            <article class="card" style="margin-top: 0.8rem; background: #f9fafb;">
+                <h3 style="margin: 0; font-size: 0.92rem; color: #6b7280; text-transform: uppercase;">Totais gerais</h3>
+                <div class="grid grid-3" style="margin-top: 0.5rem;">
+                    <div class="detail-item"><strong>Total devido</strong><span
+                            th:text="${@formatacaoService.moeda(relatorio.totalGeralDevido)}">R$ 0,00</span></div>
+                    <div class="detail-item"><strong>Total pago</strong><span
+                            th:text="${@formatacaoService.moeda(relatorio.totalGeralPago)}">R$ 0,00</span></div>
+                    <div class="detail-item"><strong>Saldo geral</strong><span
+                            th:text="${@formatacaoService.moeda(relatorio.totalGeralSaldo)}">R$ 0,00</span></div>
+                </div>
+            </article>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

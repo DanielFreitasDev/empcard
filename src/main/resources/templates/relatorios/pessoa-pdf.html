@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            font-size: 12px;
+            color: #222;
+        }
+
+        h1, h2, h3 {
+            margin: 0;
+        }
+
+        .cabecalho {
+            margin-bottom: 14px;
+        }
+
+        .cabecalho p {
+            margin: 4px 0 0;
+        }
+
+        .bloco {
+            margin-top: 14px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            padding: 8px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 8px;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 6px;
+            text-align: left;
+        }
+
+        th {
+            background: #f5f5f5;
+        }
+
+        .totais td {
+            font-weight: bold;
+        }
+
+        .direita {
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+<div class="cabecalho">
+    <h1>Relatório Analítico Mensal</h1>
+    <p><strong>Pessoa:</strong> <span th:text="${relatorio.nomePessoa}">NOME</span></p>
+    <p><strong>CPF:</strong> <span th:text="${relatorio.cpfMascarado}">000.000.000-00</span></p>
+    <p><strong>Competência:</strong> <span th:text="${relatorio.competencia}">2026-01</span></p>
+</div>
+
+<div th:each="cartaoResumo : ${relatorio.cartoes}" class="bloco">
+    <h2 th:text="${cartaoResumo.numeroMascarado + ' - ' + cartaoResumo.bandeira + ' - ' + cartaoResumo.banco}">
+        Cartão</h2>
+    <p><strong>Vencimento:</strong> <span th:text="${#temporals.format(cartaoResumo.dataVencimento, 'dd/MM/yyyy')}">01/01/2026</span>
+    </p>
+
+    <table>
+        <thead>
+        <tr>
+            <th>Descrição</th>
+            <th>Tipo</th>
+            <th>Parcela</th>
+            <th>Observação</th>
+            <th class="direita">Valor</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:if="${#lists.isEmpty(cartaoResumo.itens)}">
+            <td colspan="5">Sem itens de compra nesta competência.</td>
+        </tr>
+        <tr th:each="item : ${cartaoResumo.itens}">
+            <td th:text="${item.descricao}">DESCRIÇÃO</td>
+            <td th:text="${item.tipoLancamento}">AVULSO</td>
+            <td th:text="${item.parcela}">1/1</td>
+            <td th:text="${item.observacao}">-</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(item.valor)}">R$ 0,00</td>
+        </tr>
+        </tbody>
+    </table>
+
+    <table class="totais">
+        <tbody>
+        <tr>
+            <td>Saldo anterior</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.saldoAnterior)}">R$ 0,00</td>
+        </tr>
+        <tr>
+            <td>Total avulso</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.totalAvulso)}">R$ 0,00</td>
+        </tr>
+        <tr>
+            <td>Total parcelado</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.totalParcelado)}">R$ 0,00</td>
+        </tr>
+        <tr>
+            <td>Total fixo</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.totalFixo)}">R$ 0,00</td>
+        </tr>
+        <tr>
+            <td>Juros + multa</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.jurosMulta)}">R$ 0,00</td>
+        </tr>
+        <tr>
+            <td>Total pago</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.totalPagamentos)}">R$ 0,00</td>
+        </tr>
+        <tr>
+            <td>Total devido</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.totalDevido)}">R$ 0,00</td>
+        </tr>
+        <tr>
+            <td>Saldo final</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.saldoFinal)}">R$ 0,00</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="bloco">
+    <h3>Totais gerais</h3>
+    <table class="totais">
+        <tbody>
+        <tr>
+            <td>Total devido</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(relatorio.totalGeralDevido)}">R$ 0,00</td>
+        </tr>
+        <tr>
+            <td>Total pago</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(relatorio.totalGeralPago)}">R$ 0,00</td>
+        </tr>
+        <tr>
+            <td>Saldo geral</td>
+            <td class="direita" th:text="${@formatacaoService.moeda(relatorio.totalGeralSaldo)}">R$ 0,00</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</body>
+</html>

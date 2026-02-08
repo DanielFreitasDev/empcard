@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Usuários')}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <div th:replace="~{fragments/flash :: flash}"></div>
+
+        <section class="card">
+            <h1 class="page-title">Usuários</h1>
+            <p class="page-subtitle">Cadastre usuários administradores e de consulta.</p>
+
+            <div class="actions-row">
+                <a class="btn btn-primary" th:href="@{/usuarios/novo}">Cadastrar novo usuário</a>
+            </div>
+
+            <div class="table-wrap" style="margin-top: 0.85rem;">
+                <table class="table" style="min-width: 620px;">
+                    <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Login</th>
+                        <th>Perfil</th>
+                        <th>Status</th>
+                        <th class="text-right">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(usuarios)}">
+                        <td colspan="5">Nenhum usuário cadastrado.</td>
+                    </tr>
+                    <tr th:each="usuario : ${usuarios}">
+                        <td th:text="${usuario.nomeExibicao}">NOME</td>
+                        <td th:text="${usuario.nomeUsuario}">LOGIN</td>
+                        <td th:text="${usuario.papel}">ADMIN</td>
+                        <td>
+                            <span th:if="${usuario.ativo}" class="badge badge-success">ATIVO</span>
+                            <span th:if="${!usuario.ativo}" class="badge badge-muted">INATIVO</span>
+                        </td>
+                        <td>
+                            <div class="acoes">
+                                <a class="btn btn-edit" th:href="@{/usuarios/{id}/senha(id=${usuario.id})}">Redefinir
+                                    senha</a>
+                                <form th:action="@{/usuarios/{id}/desativar(id=${usuario.id})}" method="post">
+                                    <button class="btn btn-warning" type="submit"
+                                            data-confirm="Deseja alternar o status deste usuário?">Desativar
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

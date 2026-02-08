@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${titulo})}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <section class="card">
+            <h1 class="page-title" th:text="${titulo}">Cartão</h1>
+            <p class="page-subtitle">Todos os campos deste cadastro são obrigatórios.</p>
+
+            <form th:object="${form}" method="post"
+                  th:action="${acao == 'salvar'} ? @{/cartoes/salvar} : @{/cartoes/{id}/atualizar(id=${cartao.id})}">
+                <div class="grid grid-2" style="margin-top: 0.85rem;">
+                    <div class="form-group">
+                        <label for="numero">Número do cartão *</label>
+                        <input id="numero" th:field="*{numero}" class="form-control mask-cartao" data-digits-only="true"
+                               required>
+                        <small class="helper">Formato: XXXX XXXX XXXX XXXX</small>
+                        <small class="error-text" th:if="${#fields.hasErrors('numero')}" th:errors="*{numero}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bandeira">Bandeira *</label>
+                        <input id="bandeira" th:field="*{bandeira}" class="form-control texto-maiusculo" required>
+                        <small class="error-text" th:if="${#fields.hasErrors('bandeira')}"
+                               th:errors="*{bandeira}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="banco">Banco *</label>
+                        <input id="banco" th:field="*{banco}" class="form-control texto-maiusculo" required>
+                        <small class="error-text" th:if="${#fields.hasErrors('banco')}" th:errors="*{banco}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="diaFechamento">Dia de fechamento *</label>
+                        <input id="diaFechamento" th:field="*{diaFechamento}" type="number" min="1" max="31"
+                               class="form-control" required>
+                        <small class="error-text" th:if="${#fields.hasErrors('diaFechamento')}"
+                               th:errors="*{diaFechamento}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="diaVencimento">Dia de vencimento *</label>
+                        <input id="diaVencimento" th:field="*{diaVencimento}" type="number" min="1" max="31"
+                               class="form-control" required>
+                        <small class="error-text" th:if="${#fields.hasErrors('diaVencimento')}"
+                               th:errors="*{diaVencimento}"></small>
+                    </div>
+                </div>
+
+                <div class="actions-row">
+                    <button class="btn btn-primary" type="submit">Salvar</button>
+                    <a class="btn btn-secondary" th:href="@{/cartoes}">Cancelar</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

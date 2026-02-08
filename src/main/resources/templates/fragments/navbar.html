@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<header class="topbar" th:fragment="navbar">
+    <div class="header-row">
+        <a class="logo" th:href="@{/dashboard}">
+            <span class="logo-badge">EC</span>
+            <span>EmpCard</span>
+        </a>
+        <div class="usuario">
+            <span sec:authentication="name">USUARIO</span>
+            <form th:action="@{/logout}" method="post">
+                <button class="btn btn-secondary" type="submit">Sair</button>
+            </form>
+        </div>
+    </div>
+
+    <nav>
+        <a th:href="@{/dashboard}">Dashboard</a>
+        <a th:href="@{/pessoas}">Pessoas</a>
+        <a th:href="@{/cartoes}">Cartões</a>
+        <a th:href="@{/lancamentos}">Lançamentos</a>
+        <a th:href="@{/pagamentos}">Pagamentos</a>
+        <a th:href="@{/relatorios/pessoas}">Relatórios</a>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/usuarios}">Usuários</a>
+        <a th:href="@{/usuarios/minha-senha}">Minha senha</a>
+    </nav>
+</header>
+</body>
+</html>

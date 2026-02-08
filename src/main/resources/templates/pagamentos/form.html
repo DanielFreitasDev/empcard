@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${titulo})}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <section class="card">
+            <h1 class="page-title" th:text="${titulo}">Pagamento</h1>
+            <p class="page-subtitle">Registre o valor recebido já com máscara monetária em real.</p>
+
+            <form th:object="${form}" method="post"
+                  th:action="${acao == 'salvar'} ? @{/pagamentos/salvar} : @{/pagamentos/{id}/atualizar(id=${pagamento.id})}">
+                <div class="grid grid-2" style="margin-top: 0.85rem;">
+                    <div class="form-group">
+                        <label for="pessoaId">Pessoa *</label>
+                        <select id="pessoaId" th:field="*{pessoaId}" class="form-select" required>
+                            <option value="">Selecione</option>
+                            <option th:each="p : ${pessoas}" th:value="${p.id}" th:text="${p.nome}"></option>
+                        </select>
+                        <small class="error-text" th:if="${#fields.hasErrors('pessoaId')}"
+                               th:errors="*{pessoaId}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cartaoId">Cartão *</label>
+                        <select id="cartaoId" th:field="*{cartaoId}" class="form-select" required>
+                            <option value="">Selecione</option>
+                            <option th:each="c : ${cartoes}" th:value="${c.id}"
+                                    th:text="${@formatacaoService.cartao(c.numero) + ' - ' + c.banco}"></option>
+                        </select>
+                        <small class="error-text" th:if="${#fields.hasErrors('cartaoId')}"
+                               th:errors="*{cartaoId}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dataPagamento">Data do pagamento *</label>
+                        <input id="dataPagamento" th:field="*{dataPagamento}" type="date" class="form-control" required>
+                        <small class="error-text" th:if="${#fields.hasErrors('dataPagamento')}"
+                               th:errors="*{dataPagamento}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="valorFormatado">Valor *</label>
+                        <input id="valorFormatado" th:field="*{valorFormatado}" class="form-control mask-money"
+                               required>
+                        <small class="error-text" th:if="${#fields.hasErrors('valorFormatado')}"
+                               th:errors="*{valorFormatado}"></small>
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="observacao">Observação</label>
+                        <textarea id="observacao" th:field="*{observacao}" rows="3"
+                                  class="form-control texto-maiusculo"></textarea>
+                    </div>
+                </div>
+
+                <div class="actions-row">
+                    <button class="btn btn-primary" type="submit">Salvar</button>
+                    <a class="btn btn-secondary" th:href="@{/pagamentos}">Cancelar</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

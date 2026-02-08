@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Erro')}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <div class="card">
+            <h1 class="page-title" th:text="${titulo}">Erro</h1>
+            <p class="page-subtitle" th:text="${mensagem}">Não foi possível concluir.</p>
+            <div class="actions-row">
+                <a class="btn btn-primary" th:href="@{/dashboard}">Voltar ao dashboard</a>
+            </div>
+        </div>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Redefinir Senha')}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <section class="card">
+            <h1 class="page-title">Redefinir senha</h1>
+            <p class="page-subtitle"
+               th:text="'Usuário: ' + ${usuario.nomeExibicao} + ' (' + ${usuario.nomeUsuario} + ')'">Usuário</p>
+
+            <form th:object="${form}" method="post" th:action="@{/usuarios/{id}/senha(id=${usuario.id})}"
+                  style="margin-top: 0.85rem;">
+                <div class="form-group" style="max-width: 420px;">
+                    <label for="novaSenha">Nova senha *</label>
+                    <input id="novaSenha" th:field="*{novaSenha}" type="password" class="form-control" required>
+                    <small class="error-text" th:if="${#fields.hasErrors('novaSenha')}"
+                           th:errors="*{novaSenha}"></small>
+                </div>
+
+                <div class="actions-row">
+                    <button class="btn btn-primary" type="submit">Redefinir</button>
+                    <a class="btn btn-secondary" th:href="@{/usuarios}">Cancelar</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

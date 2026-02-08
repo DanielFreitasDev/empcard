@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/head :: head('Pagamentos')}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <div th:replace="~{fragments/flash :: flash}"></div>
+
+        <section class="card">
+            <h1 class="page-title">Pagamentos</h1>
+            <p class="page-subtitle">Registre os recebimentos, inclusive valores parciais.</p>
+
+            <div class="actions-row" sec:authorize="hasRole('ADMIN')">
+                <a class="btn btn-primary" th:href="@{/pagamentos/novo}">Cadastrar novo pagamento</a>
+            </div>
+
+            <div class="table-wrap" style="margin-top: 0.85rem;">
+                <table class="table">
+                    <thead>
+                    <tr>
+                        <th>Data</th>
+                        <th>Pessoa</th>
+                        <th>Cartão</th>
+                        <th>Valor</th>
+                        <th>Observação</th>
+                        <th class="text-right">Ações</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(pagamentos)}">
+                        <td colspan="6">Nenhum pagamento cadastrado.</td>
+                    </tr>
+                    <tr th:each="pagamento : ${pagamentos}">
+                        <td th:text="${#temporals.format(pagamento.dataPagamento, 'dd/MM/yyyy')}">01/01/2026</td>
+                        <td th:text="${pagamento.pessoa.nome}">PESSOA</td>
+                        <td th:text="${@formatacaoService.cartao(pagamento.cartao.numero)}">0000</td>
+                        <td th:text="${@formatacaoService.moeda(pagamento.valor)}">R$ 0,00</td>
+                        <td th:text="${pagamento.observacao}">-</td>
+                        <td>
+                            <div class="acoes">
+                                <a class="btn btn-view" th:href="@{/pagamentos/{id}/visualizar(id=${pagamento.id})}">Visualizar</a>
+                                <a sec:authorize="hasRole('ADMIN')" class="btn btn-edit"
+                                   th:href="@{/pagamentos/{id}/editar(id=${pagamento.id})}">Editar</a>
+                                <form sec:authorize="hasRole('ADMIN')"
+                                      th:action="@{/pagamentos/{id}/excluir(id=${pagamento.id})}" method="post">
+                                    <button class="btn btn-danger" type="submit"
+                                            data-confirm="Confirma a exclusão definitiva deste pagamento?">Excluir
+                                    </button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

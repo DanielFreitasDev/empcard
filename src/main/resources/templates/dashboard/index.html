@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Dashboard')}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <div th:replace="~{fragments/flash :: flash}"></div>
+
+        <section class="card">
+            <h1 class="page-title">Visão geral</h1>
+            <p class="page-subtitle" th:text="'Competência atual: ' + ${competenciaAtual}">Competência</p>
+
+            <div class="metric-grid" style="margin-top: 0.8rem;">
+                <article class="metric">
+                    <h3>Pessoas ativas</h3>
+                    <p th:text="${totalPessoasAtivas}">0</p>
+                </article>
+                <article class="metric">
+                    <h3>Cartões ativos</h3>
+                    <p th:text="${totalCartoesAtivos}">0</p>
+                </article>
+                <article class="metric">
+                    <h3>Lançamentos</h3>
+                    <p th:text="${totalLancamentos}">0</p>
+                </article>
+                <article class="metric">
+                    <h3>Pagamentos</h3>
+                    <p th:text="${totalPagamentos}">0</p>
+                </article>
+            </div>
+
+            <div class="card" style="margin-top: 0.85rem; background: #f9fafb;">
+                <h3 style="margin: 0; font-size: 0.9rem; color: #6b7280; text-transform: uppercase;">Total em
+                    aberto</h3>
+                <p style="margin: 0.35rem 0 0; font-size: 1.5rem; font-weight: 800;"
+                   th:text="${@formatacaoService.moeda(totalEmAberto)}">R$ 0,00</p>
+            </div>
+        </section>
+
+        <section class="card" style="margin-top: 0.9rem;">
+            <h2 class="page-title" style="font-size: 1.05rem;">Maiores saldos em aberto</h2>
+            <p class="page-subtitle">Top 10 pessoas com saldo positivo na competência atual.</p>
+
+            <div class="table-wrap" style="margin-top: 0.7rem;">
+                <table class="table" style="min-width: 420px;">
+                    <thead>
+                    <tr>
+                        <th>Pessoa</th>
+                        <th class="text-right">Saldo</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(rankingSaldos)}">
+                        <td colspan="2">Nenhum saldo em aberto encontrado.</td>
+                    </tr>
+                    <tr th:each="item : ${rankingSaldos}">
+                        <td th:text="${item.nomePessoa}">NOME</td>
+                        <td class="text-right" th:text="${@formatacaoService.moeda(item.saldo)}">R$ 0,00</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Minha Senha')}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <div th:replace="~{fragments/flash :: flash}"></div>
+
+        <section class="card">
+            <h1 class="page-title">Minha senha</h1>
+            <p class="page-subtitle">Atualize sua senha de acesso com segurança.</p>
+
+            <form th:object="${form}" th:action="@{/usuarios/minha-senha}" method="post"
+                  style="margin-top: 0.85rem; max-width: 460px;">
+                <div class="grid">
+                    <div class="form-group">
+                        <label for="senhaAtual">Senha atual *</label>
+                        <input id="senhaAtual" th:field="*{senhaAtual}" type="password" class="form-control" required>
+                        <small class="error-text" th:if="${#fields.hasErrors('senhaAtual')}"
+                               th:errors="*{senhaAtual}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="novaSenha">Nova senha *</label>
+                        <input id="novaSenha" th:field="*{novaSenha}" type="password" class="form-control" required>
+                        <small class="error-text" th:if="${#fields.hasErrors('novaSenha')}"
+                               th:errors="*{novaSenha}"></small>
+                    </div>
+                </div>
+
+                <div class="actions-row">
+                    <button class="btn btn-primary" type="submit">Alterar senha</button>
+                    <a class="btn btn-secondary" th:href="@{/dashboard}">Cancelar</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head('Visualizar Lançamento')}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <section class="card">
+            <h1 class="page-title">Visualizar lançamento</h1>
+            <p class="page-subtitle">Detalhamento completo do lançamento.</p>
+
+            <div class="detail-grid" style="margin-top: 0.8rem;">
+                <div class="detail-item"><strong>Pessoa</strong><span th:text="${lancamento.pessoa.nome}">-</span></div>
+                <div class="detail-item"><strong>Cartão</strong><span
+                        th:text="${@formatacaoService.cartao(lancamento.cartao.numero)}">-</span></div>
+                <div class="detail-item"><strong>Descrição</strong><span th:text="${lancamento.descricao}">-</span>
+                </div>
+                <div class="detail-item"><strong>Tipo</strong><span th:text="${lancamento.tipo}">-</span></div>
+                <div class="detail-item"><strong>Parcelas</strong><span
+                        th:text="${lancamento.quantidadeParcelas}">-</span></div>
+                <div class="detail-item"><strong>Valor total</strong><span
+                        th:text="${@formatacaoService.moeda(lancamento.valorTotal)}">-</span></div>
+                <div class="detail-item"><strong>Data da compra</strong><span
+                        th:text="${#temporals.format(lancamento.dataCompra, 'dd/MM/yyyy')}">-</span></div>
+                <div class="detail-item"><strong>Data fim fixo</strong><span
+                        th:text="${lancamento.dataFimFixo != null ? #temporals.format(lancamento.dataFimFixo, 'dd/MM/yyyy') : '-'}">-</span>
+                </div>
+                <div class="detail-item"><strong>Status</strong><span
+                        th:text="${lancamento.ativo ? 'ATIVO' : 'INATIVO'}">-</span></div>
+                <div class="detail-item"><strong>Observação</strong><span th:text="${lancamento.observacao}">-</span>
+                </div>
+            </div>
+
+            <div class="actions-row">
+                <a class="btn btn-secondary" th:href="@{/lancamentos}">Voltar</a>
+            </div>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

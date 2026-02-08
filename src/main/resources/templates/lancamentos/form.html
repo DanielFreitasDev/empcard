@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/head :: head(${titulo})}"></head>
+<body>
+<div class="app-shell">
+    <header th:replace="~{fragments/navbar :: navbar}"></header>
+
+    <main class="layout-content">
+        <section class="card">
+            <h1 class="page-title" th:text="${titulo}">Lançamento</h1>
+            <p class="page-subtitle">Valores já formatados em real com preenchimento automático.</p>
+
+            <form th:object="${form}" method="post"
+                  th:action="${acao == 'salvar'} ? @{/lancamentos/salvar} : @{/lancamentos/{id}/atualizar(id=${lancamento.id})}">
+                <div class="grid grid-2" style="margin-top: 0.85rem;">
+                    <div class="form-group">
+                        <label for="pessoaId">Pessoa *</label>
+                        <select id="pessoaId" th:field="*{pessoaId}" class="form-select" required>
+                            <option value="">Selecione</option>
+                            <option th:each="p : ${pessoas}" th:value="${p.id}" th:text="${p.nome}"></option>
+                        </select>
+                        <small class="error-text" th:if="${#fields.hasErrors('pessoaId')}"
+                               th:errors="*{pessoaId}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cartaoId">Cartão *</label>
+                        <select id="cartaoId" th:field="*{cartaoId}" class="form-select" required>
+                            <option value="">Selecione</option>
+                            <option th:each="c : ${cartoes}" th:value="${c.id}"
+                                    th:text="${@formatacaoService.cartao(c.numero) + ' - ' + c.banco}"></option>
+                        </select>
+                        <small class="error-text" th:if="${#fields.hasErrors('cartaoId')}"
+                               th:errors="*{cartaoId}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descricao">Descrição *</label>
+                        <input id="descricao" th:field="*{descricao}" class="form-control texto-maiusculo" required>
+                        <small class="error-text" th:if="${#fields.hasErrors('descricao')}"
+                               th:errors="*{descricao}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipoLancamento">Tipo *</label>
+                        <select id="tipoLancamento" th:field="*{tipo}" class="form-select" required>
+                            <option th:each="tipo : ${tipos}" th:value="${tipo}" th:text="${tipo}"></option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="valorFormatado">Valor *</label>
+                        <input id="valorFormatado" th:field="*{valorFormatado}" class="form-control mask-money"
+                               required>
+                        <small class="error-text" th:if="${#fields.hasErrors('valorFormatado')}"
+                               th:errors="*{valorFormatado}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="quantidadeParcelas">Quantidade de parcelas *</label>
+                        <input id="quantidadeParcelas" th:field="*{quantidadeParcelas}" type="number" min="1"
+                               class="form-control" required>
+                        <small class="error-text" th:if="${#fields.hasErrors('quantidadeParcelas')}"
+                               th:errors="*{quantidadeParcelas}"></small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dataCompra">Data da compra *</label>
+                        <input id="dataCompra" th:field="*{dataCompra}" type="date" class="form-control" required>
+                        <small class="error-text" th:if="${#fields.hasErrors('dataCompra')}"
+                               th:errors="*{dataCompra}"></small>
+                    </div>
+
+                    <div id="grupoDataFimFixo" class="form-group" style="display: none;">
+                        <label for="dataFimFixo">Data de término (fixo)</label>
+                        <input id="dataFimFixo" th:field="*{dataFimFixo}" type="date" class="form-control">
+                    </div>
+
+                    <div class="form-group" style="grid-column: 1 / -1;">
+                        <label for="observacao">Observação</label>
+                        <textarea id="observacao" th:field="*{observacao}" rows="3"
+                                  class="form-control texto-maiusculo"></textarea>
+                    </div>
+                </div>
+
+                <div class="actions-row">
+                    <button class="btn btn-primary" type="submit">Salvar</button>
+                    <a class="btn btn-secondary" th:href="@{/lancamentos}">Cancelar</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
