@@ -9,6 +9,8 @@ import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
 
 import java.io.ByteArrayOutputStream;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  * Converte relatorios renderizados em HTML para PDF.
@@ -17,6 +19,8 @@ import java.io.ByteArrayOutputStream;
 @Service
 @RequiredArgsConstructor
 public class PdfRelatorioService {
+
+    private static final DateTimeFormatter FORMATADOR_DATA_HORA_IMPRESSAO = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     private final TemplateEngine templateEngine;
     private final FormatacaoService formatacaoService;
@@ -32,6 +36,7 @@ public class PdfRelatorioService {
             Context contexto = new Context();
             contexto.setVariable("relatorio", relatorio);
             contexto.setVariable("formatacaoService", formatacaoService);
+            contexto.setVariable("dataHoraImpressao", LocalDateTime.now().format(FORMATADOR_DATA_HORA_IMPRESSAO));
 
             // Renderiza o template HTML dedicado para PDF com os dados da competencia.
             String html = templateEngine.process("relatorios/pessoa-pdf", contexto);
