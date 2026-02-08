@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -86,7 +86,7 @@
             <td th:text="${item.tipoLancamento}">AVULSO</td>
             <td th:text="${item.parcela}">1/1</td>
             <td th:text="${item.observacao}">-</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(item.valor)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(item.valor)}">R$ 0,00</td>
         </tr>
         </tbody>
     </table>
@@ -95,35 +95,35 @@
         <tbody>
         <tr>
             <td>Saldo anterior</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.saldoAnterior)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.saldoAnterior)}">R$ 0,00</td>
         </tr>
         <tr>
             <td>Total avulso</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.totalAvulso)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.totalAvulso)}">R$ 0,00</td>
         </tr>
         <tr>
             <td>Total parcelado</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.totalParcelado)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.totalParcelado)}">R$ 0,00</td>
         </tr>
         <tr>
             <td>Total fixo</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.totalFixo)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.totalFixo)}">R$ 0,00</td>
         </tr>
         <tr>
             <td>Juros + multa</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.jurosMulta)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.jurosMulta)}">R$ 0,00</td>
         </tr>
         <tr>
             <td>Total pago</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.totalPagamentos)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.totalPagamentos)}">R$ 0,00</td>
         </tr>
         <tr>
             <td>Total devido</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.totalDevido)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.totalDevido)}">R$ 0,00</td>
         </tr>
         <tr>
             <td>Saldo final</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(cartaoResumo.saldoFinal)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.saldoFinal)}">R$ 0,00</td>
         </tr>
         </tbody>
     </table>
@@ -135,15 +135,15 @@
         <tbody>
         <tr>
             <td>Total devido</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(relatorio.totalGeralDevido)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(relatorio.totalGeralDevido)}">R$ 0,00</td>
         </tr>
         <tr>
             <td>Total pago</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(relatorio.totalGeralPago)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(relatorio.totalGeralPago)}">R$ 0,00</td>
         </tr>
         <tr>
             <td>Saldo geral</td>
-            <td class="direita" th:text="${@formatacaoService.moeda(relatorio.totalGeralSaldo)}">R$ 0,00</td>
+            <td class="direita" th:text="${formatacaoService.moeda(relatorio.totalGeralSaldo)}">R$ 0,00</td>
         </tr>
         </tbody>
     </table>

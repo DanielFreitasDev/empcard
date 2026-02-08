@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 public class PdfRelatorioService {
 
     private final TemplateEngine templateEngine;
+    private final FormatacaoService formatacaoService;
 
     /**
      * Gera PDF do relatorio analitico mensal de pessoa.
@@ -30,6 +31,7 @@ public class PdfRelatorioService {
         try {
             Context contexto = new Context();
             contexto.setVariable("relatorio", relatorio);
+            contexto.setVariable("formatacaoService", formatacaoService);
 
             // Renderiza o template HTML dedicado para PDF com os dados da competencia.
             String html = templateEngine.process("relatorios/pessoa-pdf", contexto);
