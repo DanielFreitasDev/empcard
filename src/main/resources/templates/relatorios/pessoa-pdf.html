@@ -445,7 +445,7 @@
                 </td>
                 <td class="competencia-box">
                     <span class="competencia-rotulo">Competência</span>
-                    <span class="competencia-valor" th:text="${relatorio.competencia}">2026-01</span>
+                    <span class="competencia-valor" th:text="${formatacaoService.competencia(relatorio.competencia)}">01-2026</span>
                 </td>
             </tr>
         </table>

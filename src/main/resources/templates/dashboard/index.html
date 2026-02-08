@@ -10,7 +10,8 @@
 
         <section class="card">
             <h1 class="page-title">Visão geral</h1>
-            <p class="page-subtitle" th:text="'Competência atual: ' + ${competenciaAtual}">Competência</p>
+            <p class="page-subtitle"
+               th:text="'Competência atual: ' + ${@formatacaoService.competencia(competenciaAtual)}">Competência</p>
 
             <div class="metric-grid" style="margin-top: 0.8rem;">
                 <article class="metric">

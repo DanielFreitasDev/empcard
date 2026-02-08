@@ -40,7 +40,7 @@
                     <h2 class="page-title" style="font-size: 1.05rem; margin: 0;" th:text="${relatorio.nomePessoa}">
                         PESSOA</h2>
                     <p class="page-subtitle"
-                       th:text="'CPF: ' + ${relatorio.cpfMascarado} + ' | Competência: ' + ${relatorio.competencia}">
+                       th:text="'CPF: ' + ${relatorio.cpfMascarado} + ' | Competência: ' + ${@formatacaoService.competencia(relatorio.competencia)}">
                         CPF</p>
                 </div>
                 <a class="btn btn-secondary"
