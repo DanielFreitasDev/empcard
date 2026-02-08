@@ -1,152 +1,567 @@
 <!DOCTYPE html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8" />
+    <meta charset="UTF-8"/>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            font-size: 12px;
-            color: #222;
+        @page {
+            size: A4;
+            margin: 16mm 12mm 16mm 12mm;
         }
 
-        h1, h2, h3 {
+        body {
+            margin: 0;
+            font-family: "Helvetica", "Arial", sans-serif;
+            font-size: 11px;
+            color: #0f172a;
+            background: #eef2f7;
+            line-height: 1.4;
+        }
+
+        h1,
+        h2,
+        h3,
+        p {
             margin: 0;
         }
 
-        .cabecalho {
-            margin-bottom: 14px;
+        .pagina {
+            width: 100%;
         }
 
-        .cabecalho p {
-            margin: 4px 0 0;
+        .cabecalho-principal {
+            background: #0f766e;
+            color: #ffffff;
+            border-radius: 14px;
+            padding: 16px 18px;
+            border: 1px solid #0b5f59;
         }
 
-        .bloco {
+        .marca {
+            display: inline-block;
+            font-size: 10px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: bold;
+            background: #0a5a54;
+            border: 1px solid #0d4f4b;
+            border-radius: 999px;
+            padding: 3px 9px;
+            margin-bottom: 8px;
+        }
+
+        .cabecalho-principal h1 {
+            font-size: 23px;
+            line-height: 1.2;
+        }
+
+        .descricao-relatorio {
+            margin-top: 6px;
+            font-size: 12px;
+            color: #d9fff9;
+        }
+
+        .meta-tabela {
+            width: 100%;
             margin-top: 14px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+            border-collapse: separate;
+            border-spacing: 8px;
+        }
+
+        .meta-tabela td {
+            width: 33.33%;
+            background: #0a5a54;
+            border: 1px solid #0a4d48;
+            border-radius: 10px;
+            vertical-align: top;
             padding: 8px;
         }
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 8px;
+        .meta-rotulo {
+            display: block;
+            font-size: 9px;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            color: #9ce9de;
+            margin-bottom: 3px;
         }
 
-        th, td {
-            border: 1px solid #ddd;
-            padding: 6px;
-            text-align: left;
+        .meta-valor {
+            display: block;
+            font-size: 12px;
+            font-weight: bold;
+            color: #f8fffd;
         }
 
-        th {
-            background: #f5f5f5;
+        .painel-geral {
+            margin-top: 12px;
+            background: #ffffff;
+            border-radius: 12px;
+            border: 1px solid #d9e3f1;
+            padding: 12px 12px 8px;
         }
 
-        .totais td {
+        .titulo-painel {
+            font-size: 10px;
+            letter-spacing: 0.7px;
+            text-transform: uppercase;
+            color: #475569;
+            margin-bottom: 8px;
             font-weight: bold;
         }
 
-        .direita {
+        .grade-kpi {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px;
+            margin: 0;
+        }
+
+        .kpi-item {
+            border-radius: 10px;
+            border: 1px solid #dbe5f4;
+            padding: 8px 10px;
+        }
+
+        .kpi-item.primario {
+            background: #e0f2fe;
+            border-color: #bae6fd;
+        }
+
+        .kpi-item.sucesso {
+            background: #dcfce7;
+            border-color: #bbf7d0;
+        }
+
+        .kpi-item.aviso {
+            background: #fff7ed;
+            border-color: #fed7aa;
+        }
+
+        .kpi-label {
+            display: block;
+            font-size: 9px;
+            letter-spacing: 0.65px;
+            text-transform: uppercase;
+            color: #475569;
+            margin-bottom: 4px;
+            font-weight: bold;
+        }
+
+        .kpi-valor {
+            display: block;
+            font-size: 15px;
+            color: #0f172a;
+            font-weight: bold;
+        }
+
+        .sem-cartoes {
+            margin-top: 14px;
+            border-radius: 12px;
+            border: 1px solid #dbe5f4;
+            background: #ffffff;
+            padding: 16px;
+            color: #334155;
+        }
+
+        .cartao-bloco {
+            margin-top: 14px;
+            border-radius: 12px;
+            border: 1px solid #dbe5f4;
+            background: #ffffff;
+            padding: 0;
+            page-break-inside: avoid;
+        }
+
+        .faixa-cartao {
+            height: 5px;
+            border-radius: 12px 12px 0 0;
+            background: #1d4ed8;
+        }
+
+        .cabecalho-cartao {
+            width: 100%;
+            border-collapse: collapse;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .cabecalho-cartao td {
+            padding: 12px 14px;
+            vertical-align: top;
+        }
+
+        .cartao-titulo {
+            font-size: 15px;
+            color: #0f172a;
+            font-weight: bold;
+        }
+
+        .cartao-subtitulo {
+            margin-top: 4px;
+            color: #475569;
+            font-size: 10px;
+        }
+
+        .vencimento-box {
             text-align: right;
+        }
+
+        .vencimento-rotulo {
+            display: block;
+            font-size: 9px;
+            letter-spacing: 0.65px;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+
+        .vencimento-valor {
+            display: inline-block;
+            background: #eff6ff;
+            color: #1e3a8a;
+            border: 1px solid #bfdbfe;
+            border-radius: 999px;
+            font-size: 11px;
+            font-weight: bold;
+            padding: 4px 10px;
+        }
+
+        .resumo-cartao {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 8px;
+            padding: 0 6px;
+            margin-top: 4px;
+        }
+
+        .resumo-cartao td {
+            width: 25%;
+        }
+
+        .resumo-item {
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            background: #f8fafc;
+            padding: 8px;
+        }
+
+        .resumo-label {
+            display: block;
+            font-size: 9px;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            color: #64748b;
+            margin-bottom: 3px;
+            font-weight: bold;
+        }
+
+        .resumo-valor {
+            display: block;
+            font-size: 13px;
+            color: #0f172a;
+            font-weight: bold;
+        }
+
+        .conteudo-cartao {
+            padding: 0 14px 14px;
+        }
+
+        .titulo-subsecao {
+            font-size: 10px;
+            margin-top: 12px;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.7px;
+            color: #475569;
+            font-weight: bold;
+        }
+
+        .tabela-itens {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #dbe5f4;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .tabela-itens thead th {
+            background: #eff6ff;
+            color: #1e3a8a;
+            font-size: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 0.45px;
+            padding: 8px 7px;
+            border-bottom: 1px solid #bfdbfe;
+        }
+
+        .tabela-itens tbody td {
+            padding: 7px;
+            border-bottom: 1px solid #e2e8f0;
+            color: #0f172a;
+            vertical-align: top;
+        }
+
+        .tabela-itens tbody tr:nth-child(even) {
+            background: #f8fafc;
+        }
+
+        .tabela-itens tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .linha-vazia td {
+            text-align: center;
+            font-style: italic;
+            color: #475569;
+            padding: 11px 7px;
+            background: #f8fafc;
+        }
+
+        .etiqueta-tipo {
+            display: inline-block;
+            border-radius: 999px;
+            padding: 2px 8px;
+            font-size: 9px;
+            letter-spacing: 0.4px;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 1px solid;
+        }
+
+        .etiqueta-avulso {
+            color: #065f46;
+            background: #d1fae5;
+            border-color: #6ee7b7;
+        }
+
+        .etiqueta-parcelado {
+            color: #1e3a8a;
+            background: #dbeafe;
+            border-color: #93c5fd;
+        }
+
+        .etiqueta-fixo {
+            color: #92400e;
+            background: #fef3c7;
+            border-color: #fcd34d;
+        }
+
+        .totais-cartao {
+            width: 100%;
+            border-collapse: collapse;
+            border: 1px solid #dbe5f4;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .totais-cartao td {
+            padding: 7px 8px;
+            border-bottom: 1px solid #e2e8f0;
+            background: #ffffff;
+            font-size: 11px;
+        }
+
+        .totais-cartao tr:nth-child(odd) td {
+            background: #f8fafc;
+        }
+
+        .totais-cartao tr:last-child td {
+            border-bottom: none;
+        }
+
+        .totais-cartao tr.total-final td {
+            background: #e0f2fe;
+            border-top: 2px solid #93c5fd;
+            font-weight: bold;
+            color: #1e3a8a;
+        }
+
+        .texto-direita {
+            text-align: right;
+        }
+
+        .rodape-documento {
+            margin-top: 12px;
+            font-size: 9px;
+            text-align: right;
+            color: #64748b;
         }
     </style>
 </head>
 <body>
-<div class="cabecalho">
-    <h1>Relatório Analítico Mensal</h1>
-    <p><strong>Pessoa:</strong> <span th:text="${relatorio.nomePessoa}">NOME</span></p>
-    <p><strong>CPF:</strong> <span th:text="${relatorio.cpfMascarado}">000.000.000-00</span></p>
-    <p><strong>Competência:</strong> <span th:text="${relatorio.competencia}">2026-01</span></p>
-</div>
+<div class="pagina">
+    <section class="cabecalho-principal">
+        <span class="marca">EmpCard</span>
+        <h1>Relatório Analítico Mensal</h1>
+        <p class="descricao-relatorio">Consolidação visual de compras, encargos e pagamentos por cartão.</p>
 
-<div th:each="cartaoResumo : ${relatorio.cartoes}" class="bloco">
-    <h2 th:text="${cartaoResumo.numeroMascarado + ' - ' + cartaoResumo.bandeira + ' - ' + cartaoResumo.banco}">
-        Cartão</h2>
-    <p><strong>Vencimento:</strong> <span th:text="${#temporals.format(cartaoResumo.dataVencimento, 'dd/MM/yyyy')}">01/01/2026</span>
-    </p>
+        <table class="meta-tabela">
+            <tr>
+                <td>
+                    <span class="meta-rotulo">Pessoa</span>
+                    <span class="meta-valor" th:text="${relatorio.nomePessoa}">NOME</span>
+                </td>
+                <td>
+                    <span class="meta-rotulo">CPF</span>
+                    <span class="meta-valor" th:text="${relatorio.cpfMascarado}">000.000.000-00</span>
+                </td>
+                <td>
+                    <span class="meta-rotulo">Competência</span>
+                    <span class="meta-valor" th:text="${relatorio.competencia}">2026-01</span>
+                </td>
+            </tr>
+        </table>
+    </section>
 
-    <table>
-        <thead>
-        <tr>
-            <th>Descrição</th>
-            <th>Tipo</th>
-            <th>Parcela</th>
-            <th>Observação</th>
-            <th class="direita">Valor</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:if="${#lists.isEmpty(cartaoResumo.itens)}">
-            <td colspan="5">Sem itens de compra nesta competência.</td>
-        </tr>
-        <tr th:each="item : ${cartaoResumo.itens}">
-            <td th:text="${item.descricao}">DESCRIÇÃO</td>
-            <td th:text="${item.tipoLancamento}">AVULSO</td>
-            <td th:text="${item.parcela}">1/1</td>
-            <td th:text="${item.observacao}">-</td>
-            <td class="direita" th:text="${formatacaoService.moeda(item.valor)}">R$ 0,00</td>
-        </tr>
-        </tbody>
-    </table>
+    <section class="painel-geral">
+        <h2 class="titulo-painel">Totais gerais da competência</h2>
+        <table class="grade-kpi">
+            <tr>
+                <td>
+                    <div class="kpi-item primario">
+                        <span class="kpi-label">Total devido</span>
+                        <span class="kpi-valor" th:text="${formatacaoService.moeda(relatorio.totalGeralDevido)}">R$ 0,00</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="kpi-item sucesso">
+                        <span class="kpi-label">Total pago</span>
+                        <span class="kpi-valor" th:text="${formatacaoService.moeda(relatorio.totalGeralPago)}">R$ 0,00</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="kpi-item aviso">
+                        <span class="kpi-label">Saldo geral</span>
+                        <span class="kpi-valor" th:text="${formatacaoService.moeda(relatorio.totalGeralSaldo)}">R$ 0,00</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+    </section>
 
-    <table class="totais">
-        <tbody>
-        <tr>
-            <td>Saldo anterior</td>
-            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.saldoAnterior)}">R$ 0,00</td>
-        </tr>
-        <tr>
-            <td>Total avulso</td>
-            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.totalAvulso)}">R$ 0,00</td>
-        </tr>
-        <tr>
-            <td>Total parcelado</td>
-            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.totalParcelado)}">R$ 0,00</td>
-        </tr>
-        <tr>
-            <td>Total fixo</td>
-            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.totalFixo)}">R$ 0,00</td>
-        </tr>
-        <tr>
-            <td>Juros + multa</td>
-            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.jurosMulta)}">R$ 0,00</td>
-        </tr>
-        <tr>
-            <td>Total pago</td>
-            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.totalPagamentos)}">R$ 0,00</td>
-        </tr>
-        <tr>
-            <td>Total devido</td>
-            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.totalDevido)}">R$ 0,00</td>
-        </tr>
-        <tr>
-            <td>Saldo final</td>
-            <td class="direita" th:text="${formatacaoService.moeda(cartaoResumo.saldoFinal)}">R$ 0,00</td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <section th:if="${#lists.isEmpty(relatorio.cartoes)}" class="sem-cartoes">
+        Não há movimentação registrada para esta competência.
+    </section>
 
-<div class="bloco">
-    <h3>Totais gerais</h3>
-    <table class="totais">
-        <tbody>
-        <tr>
-            <td>Total devido</td>
-            <td class="direita" th:text="${formatacaoService.moeda(relatorio.totalGeralDevido)}">R$ 0,00</td>
-        </tr>
-        <tr>
-            <td>Total pago</td>
-            <td class="direita" th:text="${formatacaoService.moeda(relatorio.totalGeralPago)}">R$ 0,00</td>
-        </tr>
-        <tr>
-            <td>Saldo geral</td>
-            <td class="direita" th:text="${formatacaoService.moeda(relatorio.totalGeralSaldo)}">R$ 0,00</td>
-        </tr>
-        </tbody>
-    </table>
+    <section th:each="cartaoResumo : ${relatorio.cartoes}" class="cartao-bloco">
+        <div class="faixa-cartao"></div>
+
+        <table class="cabecalho-cartao">
+            <tr>
+                <td>
+                    <h2 class="cartao-titulo"
+                        th:text="${cartaoResumo.numeroMascarado + ' • ' + cartaoResumo.bandeira + ' • ' + cartaoResumo.banco}">
+                        Cartão
+                    </h2>
+                    <p class="cartao-subtitulo">Resumo completo da fatura por categoria e lançamentos.</p>
+                </td>
+                <td class="vencimento-box">
+                    <span class="vencimento-rotulo">Vencimento</span>
+                    <span class="vencimento-valor"
+                          th:text="${#temporals.format(cartaoResumo.dataVencimento, 'dd/MM/yyyy')}">01/01/2026</span>
+                </td>
+            </tr>
+        </table>
+
+        <table class="resumo-cartao">
+            <tr>
+                <td>
+                    <div class="resumo-item">
+                        <span class="resumo-label">Saldo anterior</span>
+                        <span class="resumo-valor" th:text="${formatacaoService.moeda(cartaoResumo.saldoAnterior)}">R$ 0,00</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="resumo-item">
+                        <span class="resumo-label">Total de compras</span>
+                        <span class="resumo-valor" th:text="${formatacaoService.moeda(cartaoResumo.totalCompras)}">R$ 0,00</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="resumo-item">
+                        <span class="resumo-label">Total devido</span>
+                        <span class="resumo-valor" th:text="${formatacaoService.moeda(cartaoResumo.totalDevido)}">R$ 0,00</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="resumo-item">
+                        <span class="resumo-label">Saldo final</span>
+                        <span class="resumo-valor" th:text="${formatacaoService.moeda(cartaoResumo.saldoFinal)}">R$ 0,00</span>
+                    </div>
+                </td>
+            </tr>
+        </table>
+
+        <div class="conteudo-cartao">
+            <h3 class="titulo-subsecao">Detalhamento das compras</h3>
+            <table class="tabela-itens">
+                <thead>
+                <tr>
+                    <th>Descrição</th>
+                    <th>Tipo</th>
+                    <th>Parcela</th>
+                    <th>Observação</th>
+                    <th class="texto-direita">Valor</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:if="${#lists.isEmpty(cartaoResumo.itens)}" class="linha-vazia">
+                    <td colspan="5">Sem itens de compra nesta competência.</td>
+                </tr>
+                <tr th:each="item : ${cartaoResumo.itens}">
+                    <td th:text="${item.descricao}">DESCRIÇÃO</td>
+                    <td>
+                        <span class="etiqueta-tipo"
+                              th:classappend="${item.tipoLancamento.name() == 'AVULSO'} ? ' etiqueta-avulso' : (${item.tipoLancamento.name() == 'PARCELADO'} ? ' etiqueta-parcelado' : ' etiqueta-fixo')"
+                              th:text="${item.tipoLancamento}">
+                            AVULSO
+                        </span>
+                    </td>
+                    <td th:text="${item.parcela}">1/1</td>
+                    <td th:text="${item.observacao}">-</td>
+                    <td class="texto-direita" th:text="${formatacaoService.moeda(item.valor)}">R$ 0,00</td>
+                </tr>
+                </tbody>
+            </table>
+
+            <h3 class="titulo-subsecao">Fechamento do cartão</h3>
+            <table class="totais-cartao">
+                <tbody>
+                <tr>
+                    <td>Saldo anterior</td>
+                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.saldoAnterior)}">R$ 0,00</td>
+                </tr>
+                <tr>
+                    <td>Total avulso</td>
+                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalAvulso)}">R$ 0,00</td>
+                </tr>
+                <tr>
+                    <td>Total parcelado</td>
+                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalParcelado)}">R$ 0,00</td>
+                </tr>
+                <tr>
+                    <td>Total fixo</td>
+                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalFixo)}">R$ 0,00</td>
+                </tr>
+                <tr>
+                    <td>Juros + multa</td>
+                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.jurosMulta)}">R$ 0,00</td>
+                </tr>
+                <tr>
+                    <td>Total pago</td>
+                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalPagamentos)}">R$ 0,00</td>
+                </tr>
+                <tr class="total-final">
+                    <td>Total devido</td>
+                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalDevido)}">R$ 0,00</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </section>
+
+    <p class="rodape-documento">Documento gerado automaticamente pelo EmpCard.</p>
 </div>
 </body>
 </html>
