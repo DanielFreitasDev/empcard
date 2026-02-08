@@ -95,7 +95,7 @@ request**; in that case, **briefly explain the exception** and **apply as much a
 
 **Suggested packages:**
 
-* `controller`, `dto`, `service`, `repository`, `domain/model`, `mapper`, `exception`, `config`
+* `controller`, `dto`, `service`, `repository`, `model`, `mapper`, `exception`, `config`
 
 #### 2) REST: conventions and contract
 
