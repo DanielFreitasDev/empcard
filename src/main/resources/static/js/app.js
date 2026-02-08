@@ -333,17 +333,23 @@
         function atualizar() {
             if (tipo.value === 'PARCELADO') {
                 parcelas.disabled = false;
+                parcelas.readOnly = false;
                 parcelas.min = '2';
                 if (Number(parcelas.value) < 2) {
                     parcelas.value = '2';
                 }
                 grupoDataFim.style.display = 'none';
             } else if (tipo.value === 'FIXO') {
-                parcelas.disabled = true;
+                // Campo desabilitado nao e enviado no submit; por isso usamos readOnly.
+                parcelas.disabled = false;
+                parcelas.readOnly = true;
+                parcelas.min = '1';
                 parcelas.value = '1';
                 grupoDataFim.style.display = 'block';
             } else {
-                parcelas.disabled = true;
+                parcelas.disabled = false;
+                parcelas.readOnly = true;
+                parcelas.min = '1';
                 parcelas.value = '1';
                 grupoDataFim.style.display = 'none';
             }
