@@ -392,35 +392,6 @@
             color: #945d00;
         }
 
-        .tabela-fechamento {
-            width: 100%;
-            border-collapse: collapse;
-            border: 1px solid #b2c4d7;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .tabela-fechamento td {
-            border-bottom: 1px solid #c5d3e2;
-            font-size: 11px;
-            padding: 7px 8px;
-        }
-
-        .tabela-fechamento tr:nth-child(odd) td {
-            background: #f8fbff;
-        }
-
-        .tabela-fechamento tr:last-child td {
-            border-bottom: none;
-        }
-
-        .tabela-fechamento tr.total-final td {
-            background: #e3efff;
-            border-top: 2px solid #aac8ff;
-            color: #1f3f7a;
-            font-weight: bold;
-        }
-
         .texto-direita {
             text-align: right;
         }
@@ -582,43 +553,6 @@
                 </tbody>
             </table>
 
-            <h3 class="titulo-secao">Fechamento financeiro</h3>
-            <table class="tabela-fechamento">
-                <tbody>
-                <tr>
-                    <td>Saldo anterior</td>
-                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.saldoAnterior)}">R$ 0,00</td>
-                </tr>
-                <tr>
-                    <td>Total avulso</td>
-                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalAvulso)}">R$ 0,00</td>
-                </tr>
-                <tr>
-                    <td>Total parcelado</td>
-                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalParcelado)}">R$ 0,00</td>
-                </tr>
-                <tr>
-                    <td>Total fixo</td>
-                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalFixo)}">R$ 0,00</td>
-                </tr>
-                <tr>
-                    <td>Juros + multa</td>
-                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.jurosMulta)}">R$ 0,00</td>
-                </tr>
-                <tr>
-                    <td>Total pago</td>
-                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalPagamentos)}">R$ 0,00</td>
-                </tr>
-                <tr>
-                    <td>Total devido</td>
-                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalDevido)}">R$ 0,00</td>
-                </tr>
-                <tr class="total-final">
-                    <td>Saldo final</td>
-                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.saldoFinal)}">R$ 0,00</td>
-                </tr>
-                </tbody>
-            </table>
         </div>
     </section>
 
