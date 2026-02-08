@@ -168,8 +168,17 @@
         }
 
         .kpi-item.saldo {
-            background: #e3efff;
-            border-color: #9dbcf7;
+            background: #ffe9cf;
+            border: 2px solid #d28c1f;
+        }
+
+        .kpi-item.saldo .kpi-rotulo {
+            color: #7a4a00;
+        }
+
+        .kpi-item.saldo .kpi-valor {
+            color: #8a3000;
+            font-size: 19px;
         }
 
         .kpi-rotulo {
@@ -272,7 +281,7 @@
         }
 
         .indicadores-cartao td {
-            width: 25%;
+            width: 20%;
         }
 
         .indicador-item {
@@ -430,7 +439,7 @@
         <table class="cabecalho-topo">
             <tr>
                 <td>
-                    <span class="selo">EmpCard Finance</span>
+                    <span class="selo">EmpCard</span>
                     <h1 class="titulo-relatorio">Relatório Analítico Mensal</h1>
                     <p class="subtitulo-relatorio">Resumo completo de compras, encargos e pagamentos em um único documento.</p>
                 </td>
@@ -477,7 +486,7 @@
                 </td>
                 <td>
                     <div class="kpi-item saldo">
-                        <span class="kpi-rotulo">Saldo geral</span>
+                        <span class="kpi-rotulo">Valor total a pagar</span>
                         <span class="kpi-valor" th:text="${formatacaoService.moeda(relatorio.totalGeralSaldo)}">R$ 0,00</span>
                     </div>
                 </td>
@@ -524,6 +533,12 @@
                     <div class="indicador-item">
                         <span class="indicador-rotulo">Total devido</span>
                         <span class="indicador-valor" th:text="${formatacaoService.moeda(cartaoResumo.totalDevido)}">R$ 0,00</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="indicador-item">
+                        <span class="indicador-rotulo">Total pago</span>
+                        <span class="indicador-valor" th:text="${formatacaoService.moeda(cartaoResumo.totalPagamentos)}">R$ 0,00</span>
                     </div>
                 </td>
                 <td>
@@ -594,9 +609,13 @@
                     <td>Total pago</td>
                     <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalPagamentos)}">R$ 0,00</td>
                 </tr>
-                <tr class="total-final">
+                <tr>
                     <td>Total devido</td>
                     <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.totalDevido)}">R$ 0,00</td>
+                </tr>
+                <tr class="total-final">
+                    <td>Saldo final</td>
+                    <td class="texto-direita" th:text="${formatacaoService.moeda(cartaoResumo.saldoFinal)}">R$ 0,00</td>
                 </tr>
                 </tbody>
             </table>
