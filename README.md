@@ -144,6 +144,98 @@ Comandos:
 ./mvnw spring-boot:run -Pdev
 ```
 
+## Deploy em produção (Ubuntu 24.04, sem container)
+
+Estratégia recomendada: executar o JAR com `java -jar`, gerenciado por `systemd`, com configuração externa por
+variáveis de ambiente.
+
+### 1) Gerar artefato
+
+```bash
+cd /caminho/do/projeto/empcard
+./mvnw clean package
+```
+
+### 2) Criar usuário de serviço e diretórios
+
+```bash
+sudo useradd --system --home /opt/empcard --shell /usr/sbin/nologin empcard
+sudo mkdir -p /opt/empcard /etc/empcard
+sudo cp target/empcard-1.0.0.jar /opt/empcard/empcard.jar
+sudo chown -R empcard:empcard /opt/empcard
+```
+
+### 3) Criar arquivo de ambiente (`/etc/empcard/empcard.env`)
+
+```bash
+sudo tee /etc/empcard/empcard.env > /dev/null <<'EOF'
+SPRING_PROFILES_ACTIVE=prod
+PORT=8080
+SPRING_DATASOURCE_URL=jdbc:postgresql://127.0.0.1:5432/empcard
+SPRING_DATASOURCE_USERNAME=SEU_USUARIO
+SPRING_DATASOURCE_PASSWORD=SUA_SENHA
+EOF
+sudo chmod 600 /etc/empcard/empcard.env
+sudo chown root:root /etc/empcard/empcard.env
+```
+
+### 4) Criar serviço systemd (`/etc/systemd/system/empcard.service`)
+
+```bash
+sudo tee /etc/systemd/system/empcard.service > /dev/null <<'EOF'
+[Unit]
+Description=Empcard Spring Boot
+After=network.target
+
+[Service]
+Type=exec
+User=empcard
+Group=empcard
+WorkingDirectory=/opt/empcard
+EnvironmentFile=/etc/empcard/empcard.env
+ExecStart=/usr/bin/java -jar /opt/empcard/empcard.jar
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+### 5) Ativar para iniciar junto com o boot
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable --now empcard
+sudo systemctl status empcard --no-pager
+```
+
+### 6) Ver logs
+
+```bash
+journalctl -u empcard -f
+```
+
+### Atualização de versão (deploy futuro)
+
+```bash
+./mvnw clean package
+sudo cp target/empcard-1.0.0.jar /opt/empcard/empcard.jar
+sudo systemctl restart empcard
+```
+
+### Ajuste recomendado para produção
+
+No arquivo `src/main/resources/application-prod.properties`, evite `logging.level.org.hibernate.SQL=DEBUG` em
+produção. Prefira `INFO` (ou remova a configuração) para reduzir ruído e risco de exposição de dados sensíveis em log.
+
+### Fontes oficiais
+
+- Spring Boot (installing): <https://docs.spring.io/spring-boot/how-to/deployment/installing.html>
+- Spring Boot (external config): <https://docs.spring.io/spring-boot/reference/features/external-config.html>
+- systemd (`Restart=on-failure`): <https://www.freedesktop.org/software/systemd/man/253/systemd.service.html>
+
 ## Docker
 
 Build da imagem:
@@ -194,4 +286,3 @@ O teste usa H2 em memória (`src/test/resources/application.properties`) para va
 - CPF, CEP, celular, WhatsApp e número de cartão são persistidos apenas com dígitos.
 - Máscaras são aplicadas na visualização do frontend.
 - O relatório mensal é calculado dinamicamente com base em lançamentos + pagamentos.
-
