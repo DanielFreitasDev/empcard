@@ -1,9 +1,11 @@
 package io.freitas.empcard.controller;
 
+import io.freitas.empcard.config.VisualizacaoMobileService;
 import io.freitas.empcard.dto.AlterarSenhaFormDto;
 import io.freitas.empcard.dto.ResetSenhaUsuarioDto;
 import io.freitas.empcard.dto.UsuarioFormDto;
 import io.freitas.empcard.service.UsuarioService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,18 +29,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class UsuarioController {
 
     private final UsuarioService usuarioService;
+    private final VisualizacaoMobileService visualizacaoMobileService;
 
     /**
      * Lista usuarios cadastrados.
      *
-     * @param model modelo da tela
+     * @param model      modelo da tela
+     * @param requisicao requisicao HTTP para deteccao de layout mobile
      * @return template de listagem
      */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping
-    public String listar(Model model) {
+    public String listar(Model model, HttpServletRequest requisicao) {
         model.addAttribute("usuarios", usuarioService.listarTodos());
-        return "usuarios/lista";
+        return visualizacaoMobileService.resolverTemplate(requisicao, "usuarios/lista", "mobile/usuarios/lista");
     }
 
     /**

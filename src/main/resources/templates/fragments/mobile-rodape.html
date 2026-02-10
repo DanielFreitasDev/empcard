@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav th:fragment="menu(secaoAtiva)" class="mobile-rodape">
+    <div class="mobile-rodape-lista">
+        <a th:href="@{/dashboard}" class="mobile-rodape-link"
+           th:classappend="${secaoAtiva == 'dashboard'} ? ' ativo' : ''">Dashboard</a>
+        <a th:href="@{/pessoas}" class="mobile-rodape-link"
+           th:classappend="${secaoAtiva == 'pessoas'} ? ' ativo' : ''">Pessoas</a>
+        <a th:href="@{/cartoes}" class="mobile-rodape-link"
+           th:classappend="${secaoAtiva == 'cartoes'} ? ' ativo' : ''">Cartoes</a>
+        <a th:href="@{/lancamentos}" class="mobile-rodape-link"
+           th:classappend="${secaoAtiva == 'lancamentos'} ? ' ativo' : ''">Lancamentos</a>
+        <a th:href="@{/pagamentos}" class="mobile-rodape-link"
+           th:classappend="${secaoAtiva == 'pagamentos'} ? ' ativo' : ''">Cobrancas</a>
+        <a th:href="@{/relatorios/pessoas}" class="mobile-rodape-link"
+           th:classappend="${secaoAtiva == 'relatorios'} ? ' ativo' : ''">Relatorios</a>
+        <a sec:authorize="hasRole('ADMIN')" th:href="@{/usuarios}" class="mobile-rodape-link"
+           th:classappend="${secaoAtiva == 'usuarios'} ? ' ativo' : ''">Usuarios</a>
+    </div>
+</nav>
+</body>
+</html>

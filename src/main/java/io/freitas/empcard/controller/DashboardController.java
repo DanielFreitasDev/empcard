@@ -1,5 +1,6 @@
 package io.freitas.empcard.controller;
 
+import io.freitas.empcard.config.VisualizacaoMobileService;
 import io.freitas.empcard.dto.RelatorioPessoaDto;
 import io.freitas.empcard.model.Pessoa;
 import io.freitas.empcard.service.CartaoService;
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import jakarta.servlet.http.HttpServletRequest;
 import java.math.BigDecimal;
 import java.time.YearMonth;
 import java.util.ArrayList;
@@ -32,15 +34,17 @@ public class DashboardController {
     private final LancamentoService lancamentoService;
     private final PagamentoService pagamentoService;
     private final RelatorioService relatorioService;
+    private final VisualizacaoMobileService visualizacaoMobileService;
 
     /**
      * Exibe resumo operacional com indicadores e ranking de maiores saldos em aberto.
      *
-     * @param model modelo da tela
+     * @param model     modelo da tela
+     * @param requisicao requisicao HTTP para deteccao de layout mobile
      * @return template do dashboard
      */
     @GetMapping({"/", "/dashboard"})
-    public String dashboard(Model model) {
+    public String dashboard(Model model, HttpServletRequest requisicao) {
         YearMonth competenciaAtual = YearMonth.now();
 
         List<Pessoa> pessoasAtivas = pessoaService.listarAtivos();
@@ -69,7 +73,7 @@ public class DashboardController {
         model.addAttribute("rankingSaldos", rankingSaldos.stream().limit(10).toList());
 
         log.info("Dashboard carregado para competencia {}", competenciaAtual);
-        return "dashboard/index";
+        return visualizacaoMobileService.resolverTemplate(requisicao, "dashboard/index", "mobile/dashboard/index");
     }
 
     /**

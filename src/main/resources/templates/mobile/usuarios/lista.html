@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/mobile-head :: headMobile('Gestao de Usuarios')}"></head>
+<body class="mobile-body">
+<div class="mobile-shell">
+    <header class="mobile-header">
+        <a class="mobile-botao-icone" th:href="@{/dashboard}" aria-label="Voltar">&#8592;</a>
+
+        <div class="mobile-header-titulo">
+            <p class="mobile-header-subtitulo">Administracao</p>
+            <h1>Gestao de usuarios</h1>
+        </div>
+
+        <div class="mobile-header-acoes">
+            <button id="alternadorTema" type="button" class="mobile-botao">Ativar tema escuro</button>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="mobile-link-btn">Sair</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="mobile-main">
+        <div th:replace="~{fragments/flash :: flash}"></div>
+
+        <section class="mobile-cartao">
+            <h2 class="mobile-cartao-titulo">Controle de acessos</h2>
+            <p class="mobile-cartao-subtitulo">Cadastre administradores e usuarios de consulta.</p>
+
+            <div class="mobile-kpi-grid">
+                <article class="mobile-kpi">
+                    <small>Total usuarios</small>
+                    <strong th:text="${#lists.size(usuarios)}">0</strong>
+                </article>
+                <article class="mobile-kpi">
+                    <small>Ativos</small>
+                    <strong th:text="${#lists.size(usuarios.?[ativo])}">0</strong>
+                </article>
+            </div>
+
+            <div class="mobile-acoes" style="margin-top: 0.7rem;">
+                <a class="mobile-botao mobile-botao-primario" th:href="@{/usuarios/novo}">Cadastrar usuario</a>
+                <a class="mobile-botao" th:href="@{/usuarios/minha-senha}">Minha senha</a>
+            </div>
+        </section>
+
+        <section class="mobile-cartao">
+            <h3 class="mobile-cartao-titulo">Usuarios cadastrados</h3>
+
+            <div th:if="${#lists.isEmpty(usuarios)}" class="mobile-vazio">
+                Nenhum usuario cadastrado.
+            </div>
+
+            <div th:if="${!#lists.isEmpty(usuarios)}" class="mobile-lista">
+                <article class="mobile-item" th:each="usuario : ${usuarios}">
+                    <div class="mobile-item-topo">
+                        <div>
+                            <strong th:text="${usuario.nomeExibicao}">NOME</strong>
+                            <span th:text="${usuario.nomeUsuario}">login</span>
+                        </div>
+                        <span th:if="${usuario.papel.name() == 'ADMIN'}" class="mobile-status mobile-status-admin">ADMIN</span>
+                        <span th:if="${usuario.papel.name() != 'ADMIN'}" class="mobile-status mobile-status-consulta"
+                              th:text="${usuario.papel}">CONSULTA</span>
+                    </div>
+
+                    <div class="mobile-linha-dados">
+                        <strong>Status</strong>
+                        <span th:text="${usuario.ativo ? 'ATIVO' : 'INATIVO'}">ATIVO</span>
+                    </div>
+
+                    <div class="mobile-acoes">
+                        <a class="mobile-botao" th:href="@{/usuarios/{id}/senha(id=${usuario.id})}">Redefinir senha</a>
+
+                        <form th:action="@{/usuarios/{id}/desativar(id=${usuario.id})}" method="post">
+                            <button class="mobile-botao" type="submit"
+                                    data-confirm="Deseja alternar o status deste usuario?">Desativar
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <nav th:replace="~{fragments/mobile-rodape :: menu('usuarios')}"></nav>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

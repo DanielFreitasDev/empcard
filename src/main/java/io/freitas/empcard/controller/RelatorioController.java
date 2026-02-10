@@ -1,9 +1,11 @@
 package io.freitas.empcard.controller;
 
+import io.freitas.empcard.config.VisualizacaoMobileService;
 import io.freitas.empcard.dto.RelatorioPessoaDto;
 import io.freitas.empcard.service.PdfRelatorioService;
 import io.freitas.empcard.service.PessoaService;
 import io.freitas.empcard.service.RelatorioService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ContentDisposition;
@@ -32,6 +34,7 @@ public class RelatorioController {
     private final PessoaService pessoaService;
     private final RelatorioService relatorioService;
     private final PdfRelatorioService pdfRelatorioService;
+    private final VisualizacaoMobileService visualizacaoMobileService;
 
     /**
      * Exibe filtro e resultado do relatorio analitico mensal por pessoa.
@@ -39,12 +42,14 @@ public class RelatorioController {
      * @param pessoaId         id da pessoa selecionada
      * @param competenciaTexto competencia no formato yyyy-MM
      * @param model            modelo da tela
+     * @param requisicao       requisicao HTTP para deteccao de layout mobile
      * @return template de relatorio
      */
     @GetMapping("/pessoas")
     public String relatorioPessoas(@RequestParam(required = false) Long pessoaId,
                                    @RequestParam(required = false) String competenciaTexto,
-                                   Model model) {
+                                   Model model,
+                                   HttpServletRequest requisicao) {
         model.addAttribute("pessoas", pessoaService.listarAtivos());
 
         YearMonth competencia = (competenciaTexto == null || competenciaTexto.isBlank())
@@ -59,7 +64,7 @@ public class RelatorioController {
             model.addAttribute("relatorio", relatorio);
         }
 
-        return "relatorios/pessoa";
+        return visualizacaoMobileService.resolverTemplate(requisicao, "relatorios/pessoa", "mobile/relatorios/pessoa");
     }
 
     /**

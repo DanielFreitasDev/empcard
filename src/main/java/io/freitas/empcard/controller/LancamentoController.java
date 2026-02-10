@@ -1,11 +1,13 @@
 package io.freitas.empcard.controller;
 
+import io.freitas.empcard.config.VisualizacaoMobileService;
 import io.freitas.empcard.dto.LancamentoFormDto;
 import io.freitas.empcard.model.Lancamento;
 import io.freitas.empcard.model.TipoLancamento;
 import io.freitas.empcard.service.CartaoService;
 import io.freitas.empcard.service.LancamentoService;
 import io.freitas.empcard.service.PessoaService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -30,6 +32,7 @@ public class LancamentoController {
     private final LancamentoService lancamentoService;
     private final PessoaService pessoaService;
     private final CartaoService cartaoService;
+    private final VisualizacaoMobileService visualizacaoMobileService;
 
     /**
      * Lista lancamentos ja registrados.
@@ -46,12 +49,13 @@ public class LancamentoController {
     /**
      * Exibe formulario de novo lancamento.
      *
-     * @param model modelo da tela
+     * @param model      modelo da tela
+     * @param requisicao requisicao HTTP para deteccao de layout mobile
      * @return template de formulario
      */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/novo")
-    public String novo(Model model) {
+    public String novo(Model model, HttpServletRequest requisicao) {
         if (!model.containsAttribute("form")) {
             LancamentoFormDto form = new LancamentoFormDto();
             form.setTipo(TipoLancamento.AVULSO);
@@ -62,7 +66,7 @@ public class LancamentoController {
         model.addAttribute("tipos", TipoLancamento.values());
         model.addAttribute("acao", "salvar");
         model.addAttribute("titulo", "Novo Lancamento");
-        return "lancamentos/form";
+        return visualizacaoMobileService.resolverTemplate(requisicao, "lancamentos/form", "mobile/lancamentos/form");
     }
 
     /**
@@ -72,6 +76,7 @@ public class LancamentoController {
      * @param bindingResult      erros de validacao
      * @param model              modelo da tela
      * @param redirectAttributes mensagens de retorno
+     * @param requisicao         requisicao HTTP para deteccao de layout mobile
      * @return view ou redirecionamento
      */
     @PreAuthorize("hasRole('ADMIN')")
@@ -79,13 +84,14 @@ public class LancamentoController {
     public String salvar(@Valid @ModelAttribute("form") LancamentoFormDto form,
                          BindingResult bindingResult,
                          Model model,
-                         RedirectAttributes redirectAttributes) {
+                         RedirectAttributes redirectAttributes,
+                         HttpServletRequest requisicao) {
         if (bindingResult.hasErrors()) {
             carregarCombos(model);
             model.addAttribute("tipos", TipoLancamento.values());
             model.addAttribute("acao", "salvar");
             model.addAttribute("titulo", "Novo Lancamento");
-            return "lancamentos/form";
+            return visualizacaoMobileService.resolverTemplate(requisicao, "lancamentos/form", "mobile/lancamentos/form");
         }
 
         lancamentoService.criar(form);
@@ -109,13 +115,14 @@ public class LancamentoController {
     /**
      * Exibe formulario de edicao de lancamento.
      *
-     * @param id    id do lancamento
-     * @param model modelo da tela
+     * @param id         id do lancamento
+     * @param model      modelo da tela
+     * @param requisicao requisicao HTTP para deteccao de layout mobile
      * @return template de formulario
      */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}/editar")
-    public String editar(@PathVariable Long id, Model model) {
+    public String editar(@PathVariable Long id, Model model, HttpServletRequest requisicao) {
         Lancamento lancamento = lancamentoService.buscarPorId(id);
         if (!model.containsAttribute("form")) {
             model.addAttribute("form", lancamentoService.paraForm(lancamento));
@@ -125,7 +132,7 @@ public class LancamentoController {
         model.addAttribute("lancamento", lancamento);
         model.addAttribute("acao", "atualizar");
         model.addAttribute("titulo", "Editar Lancamento");
-        return "lancamentos/form";
+        return visualizacaoMobileService.resolverTemplate(requisicao, "lancamentos/form", "mobile/lancamentos/form");
     }
 
     /**
@@ -136,6 +143,7 @@ public class LancamentoController {
      * @param bindingResult      erros de validacao
      * @param model              modelo da tela
      * @param redirectAttributes mensagens de retorno
+     * @param requisicao         requisicao HTTP para deteccao de layout mobile
      * @return view ou redirecionamento
      */
     @PreAuthorize("hasRole('ADMIN')")
@@ -144,14 +152,15 @@ public class LancamentoController {
                             @Valid @ModelAttribute("form") LancamentoFormDto form,
                             BindingResult bindingResult,
                             Model model,
-                            RedirectAttributes redirectAttributes) {
+                            RedirectAttributes redirectAttributes,
+                            HttpServletRequest requisicao) {
         if (bindingResult.hasErrors()) {
             carregarCombos(model);
             model.addAttribute("tipos", TipoLancamento.values());
             model.addAttribute("lancamento", lancamentoService.buscarPorId(id));
             model.addAttribute("acao", "atualizar");
             model.addAttribute("titulo", "Editar Lancamento");
-            return "lancamentos/form";
+            return visualizacaoMobileService.resolverTemplate(requisicao, "lancamentos/form", "mobile/lancamentos/form");
         }
 
         lancamentoService.atualizar(id, form);

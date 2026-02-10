@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="~{fragments/mobile-head :: headMobile(${titulo})}"></head>
+<body class="mobile-body">
+<div class="mobile-shell">
+    <header class="mobile-header">
+        <a class="mobile-botao-icone" th:href="@{/pagamentos}" aria-label="Voltar">&#8592;</a>
+
+        <div class="mobile-header-titulo">
+            <p class="mobile-header-subtitulo">Recebimentos</p>
+            <h1 th:text="${titulo}">Novo Pagamento</h1>
+        </div>
+
+        <div class="mobile-header-acoes">
+            <button id="alternadorTema" type="button" class="mobile-botao">Ativar tema escuro</button>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="mobile-link-btn">Sair</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="mobile-main">
+        <section class="mobile-cartao">
+            <h2 class="mobile-cartao-titulo">Registrar pagamento</h2>
+            <p class="mobile-cartao-subtitulo">Informe quem pagou, quando e quanto foi recebido.</p>
+
+            <form class="mobile-form" th:object="${form}" method="post"
+                  th:action="${acao == 'salvar'} ? @{/pagamentos/salvar} : @{/pagamentos/{id}/atualizar(id=${pagamento.id})}">
+                <div class="mobile-form-grid">
+                    <div class="mobile-form-group">
+                        <label for="pessoaId">Pessoa *</label>
+                        <select id="pessoaId" th:field="*{pessoaId}" class="mobile-select" required>
+                            <option value="">Selecione</option>
+                            <option th:each="p : ${pessoas}" th:value="${p.id}" th:text="${p.nome}"></option>
+                        </select>
+                        <p class="mobile-erro" th:if="${#fields.hasErrors('pessoaId')}" th:errors="*{pessoaId}"></p>
+                    </div>
+
+                    <div class="mobile-form-group">
+                        <label for="cartaoId">Cartao *</label>
+                        <select id="cartaoId" th:field="*{cartaoId}" class="mobile-select" required>
+                            <option value="">Selecione</option>
+                            <option th:each="c : ${cartoes}" th:value="${c.id}"
+                                    th:text="${@formatacaoService.cartao(c.numero) + ' - ' + c.banco}"></option>
+                        </select>
+                        <p class="mobile-erro" th:if="${#fields.hasErrors('cartaoId')}" th:errors="*{cartaoId}"></p>
+                    </div>
+
+                    <div class="mobile-form-group">
+                        <label for="dataPagamento">Data *</label>
+                        <input id="dataPagamento" th:field="*{dataPagamento}" type="date" class="mobile-input" required>
+                        <p class="mobile-erro" th:if="${#fields.hasErrors('dataPagamento')}" th:errors="*{dataPagamento}"></p>
+                    </div>
+
+                    <div class="mobile-form-group">
+                        <label for="valorFormatado">Valor *</label>
+                        <input id="valorFormatado" th:field="*{valorFormatado}" class="mobile-input mask-money" required>
+                        <p class="mobile-erro" th:if="${#fields.hasErrors('valorFormatado')}" th:errors="*{valorFormatado}"></p>
+                    </div>
+
+                    <div class="mobile-form-group mobile-form-group--coluna-inteira">
+                        <label for="observacao">Observacao</label>
+                        <textarea id="observacao" th:field="*{observacao}" rows="3"
+                                  class="mobile-textarea texto-maiusculo"></textarea>
+                    </div>
+                </div>
+
+                <div class="mobile-acoes">
+                    <button class="mobile-botao mobile-botao-primario" type="submit">Salvar</button>
+                    <a class="mobile-botao" th:href="@{/pagamentos}">Cancelar</a>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <nav th:replace="~{fragments/mobile-rodape :: menu('pagamentos')}"></nav>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

@@ -1,8 +1,10 @@
 package io.freitas.empcard.controller;
 
+import io.freitas.empcard.config.VisualizacaoMobileService;
 import io.freitas.empcard.dto.PessoaFormDto;
 import io.freitas.empcard.model.Pessoa;
 import io.freitas.empcard.service.PessoaService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,34 +29,37 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class PessoaController {
 
     private final PessoaService pessoaService;
+    private final VisualizacaoMobileService visualizacaoMobileService;
 
     /**
      * Lista pessoas cadastradas exibindo botoes de visualizar, editar, desativar e excluir.
      *
-     * @param model modelo da tela
+     * @param model      modelo da tela
+     * @param requisicao requisicao HTTP para deteccao de layout mobile
      * @return template de listagem
      */
     @GetMapping
-    public String listar(Model model) {
+    public String listar(Model model, HttpServletRequest requisicao) {
         model.addAttribute("pessoas", pessoaService.listarTodos());
-        return "pessoas/lista";
+        return visualizacaoMobileService.resolverTemplate(requisicao, "pessoas/lista", "mobile/pessoas/lista");
     }
 
     /**
      * Exibe formulario de nova pessoa.
      *
-     * @param model modelo da tela
+     * @param model      modelo da tela
+     * @param requisicao requisicao HTTP para deteccao de layout mobile
      * @return template de formulario
      */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/novo")
-    public String novo(Model model) {
+    public String novo(Model model, HttpServletRequest requisicao) {
         if (!model.containsAttribute("form")) {
             model.addAttribute("form", new PessoaFormDto());
         }
         model.addAttribute("acao", "salvar");
         model.addAttribute("titulo", "Nova Pessoa");
-        return "pessoas/form";
+        return visualizacaoMobileService.resolverTemplate(requisicao, "pessoas/form", "mobile/pessoas/form");
     }
 
     /**
@@ -64,6 +69,7 @@ public class PessoaController {
      * @param bindingResult      erros de validacao
      * @param model              modelo da tela
      * @param redirectAttributes mensagens de retorno
+     * @param requisicao         requisicao HTTP para deteccao de layout mobile
      * @return view ou redirecionamento
      */
     @PreAuthorize("hasRole('ADMIN')")
@@ -71,11 +77,12 @@ public class PessoaController {
     public String salvar(@Valid @ModelAttribute("form") PessoaFormDto form,
                          BindingResult bindingResult,
                          Model model,
-                         RedirectAttributes redirectAttributes) {
+                         RedirectAttributes redirectAttributes,
+                         HttpServletRequest requisicao) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("acao", "salvar");
             model.addAttribute("titulo", "Nova Pessoa");
-            return "pessoas/form";
+            return visualizacaoMobileService.resolverTemplate(requisicao, "pessoas/form", "mobile/pessoas/form");
         }
 
         pessoaService.criar(form);
@@ -86,27 +93,29 @@ public class PessoaController {
     /**
      * Exibe tela somente leitura com dados completos da pessoa.
      *
-     * @param id    id da pessoa
-     * @param model modelo da tela
+     * @param id         id da pessoa
+     * @param model      modelo da tela
+     * @param requisicao requisicao HTTP para deteccao de layout mobile
      * @return template de visualizacao
      */
     @GetMapping("/{id}/visualizar")
-    public String visualizar(@PathVariable Long id, Model model) {
+    public String visualizar(@PathVariable Long id, Model model, HttpServletRequest requisicao) {
         Pessoa pessoa = pessoaService.buscarPorId(id);
         model.addAttribute("pessoa", pessoa);
-        return "pessoas/detalhe";
+        return visualizacaoMobileService.resolverTemplate(requisicao, "pessoas/detalhe", "mobile/pessoas/detalhe");
     }
 
     /**
      * Exibe formulario de edicao de pessoa existente.
      *
-     * @param id    id da pessoa
-     * @param model modelo da tela
+     * @param id         id da pessoa
+     * @param model      modelo da tela
+     * @param requisicao requisicao HTTP para deteccao de layout mobile
      * @return template de formulario
      */
     @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/{id}/editar")
-    public String editar(@PathVariable Long id, Model model) {
+    public String editar(@PathVariable Long id, Model model, HttpServletRequest requisicao) {
         Pessoa pessoa = pessoaService.buscarPorId(id);
         if (!model.containsAttribute("form")) {
             model.addAttribute("form", pessoaService.paraForm(pessoa));
@@ -114,7 +123,7 @@ public class PessoaController {
         model.addAttribute("pessoa", pessoa);
         model.addAttribute("acao", "atualizar");
         model.addAttribute("titulo", "Editar Pessoa");
-        return "pessoas/form";
+        return visualizacaoMobileService.resolverTemplate(requisicao, "pessoas/form", "mobile/pessoas/form");
     }
 
     /**
@@ -125,6 +134,7 @@ public class PessoaController {
      * @param bindingResult      erros de validacao
      * @param model              modelo da tela
      * @param redirectAttributes mensagens de retorno
+     * @param requisicao         requisicao HTTP para deteccao de layout mobile
      * @return view ou redirecionamento
      */
     @PreAuthorize("hasRole('ADMIN')")
@@ -133,12 +143,13 @@ public class PessoaController {
                             @Valid @ModelAttribute("form") PessoaFormDto form,
                             BindingResult bindingResult,
                             Model model,
-                            RedirectAttributes redirectAttributes) {
+                            RedirectAttributes redirectAttributes,
+                            HttpServletRequest requisicao) {
         if (bindingResult.hasErrors()) {
             model.addAttribute("pessoa", pessoaService.buscarPorId(id));
             model.addAttribute("acao", "atualizar");
             model.addAttribute("titulo", "Editar Pessoa");
-            return "pessoas/form";
+            return visualizacaoMobileService.resolverTemplate(requisicao, "pessoas/form", "mobile/pessoas/form");
         }
 
         pessoaService.atualizar(id, form);

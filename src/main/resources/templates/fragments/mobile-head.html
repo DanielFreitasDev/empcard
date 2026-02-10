@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="headMobile(titulo)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <title th:text="${titulo} + ' | EmpCard'">EmpCard</title>
+    <script>
+        (function definirTemaInicialMobile() {
+            const chaveTema = 'empcard-tema';
+            const temaClaro = 'claro';
+            const temaEscuro = 'escuro';
+            let temaInicial = temaClaro;
+
+            try {
+                const temaSalvo = window.localStorage.getItem(chaveTema);
+                if (temaSalvo === temaClaro || temaSalvo === temaEscuro) {
+                    temaInicial = temaSalvo;
+                } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    temaInicial = temaEscuro;
+                }
+            } catch (erro) {
+                if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                    temaInicial = temaEscuro;
+                }
+            }
+
+            document.documentElement.setAttribute('data-tema', temaInicial);
+            document.documentElement.classList.toggle('dark', temaInicial === temaEscuro);
+        })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/css/mobile.css}">
+</head>
+</html>

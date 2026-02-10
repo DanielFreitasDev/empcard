@@ -1,8 +1,10 @@
 package io.freitas.empcard.controller;
 
+import io.freitas.empcard.config.VisualizacaoMobileService;
 import io.freitas.empcard.dto.CartaoFormDto;
 import io.freitas.empcard.model.Cartao;
 import io.freitas.empcard.service.CartaoService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,17 +27,19 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class CartaoController {
 
     private final CartaoService cartaoService;
+    private final VisualizacaoMobileService visualizacaoMobileService;
 
     /**
      * Exibe listagem de cartoes.
      *
-     * @param model modelo da tela
+     * @param model      modelo da tela
+     * @param requisicao requisicao HTTP para deteccao de layout mobile
      * @return template de listagem
      */
     @GetMapping
-    public String listar(Model model) {
+    public String listar(Model model, HttpServletRequest requisicao) {
         model.addAttribute("cartoes", cartaoService.listarTodos());
-        return "cartoes/lista";
+        return visualizacaoMobileService.resolverTemplate(requisicao, "cartoes/lista", "mobile/cartoes/lista");
     }
 
     /**

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/mobile-head :: headMobile('Gerenciar Cartoes')}"></head>
+<body class="mobile-body">
+<div class="mobile-shell">
+    <header class="mobile-header">
+        <a class="mobile-botao-icone" th:href="@{/dashboard}" aria-label="Voltar">&#8592;</a>
+
+        <div class="mobile-header-titulo">
+            <p class="mobile-header-subtitulo">Cartoes cadastrados</p>
+            <h1>Gerenciar cartoes</h1>
+        </div>
+
+        <div class="mobile-header-acoes">
+            <button id="alternadorTema" type="button" class="mobile-botao">Ativar tema escuro</button>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="mobile-link-btn">Sair</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="mobile-main">
+        <div th:replace="~{fragments/flash :: flash}"></div>
+
+        <section class="mobile-cartao">
+            <h2 class="mobile-cartao-titulo">Base de cartoes</h2>
+            <p class="mobile-cartao-subtitulo">Controle de fechamento e vencimento por cartao.</p>
+
+            <div class="mobile-kpi-grid">
+                <article class="mobile-kpi">
+                    <small>Total</small>
+                    <strong th:text="${#lists.size(cartoes)}">0</strong>
+                </article>
+                <article class="mobile-kpi">
+                    <small>Ativos</small>
+                    <strong th:text="${#lists.size(cartoes.?[ativo])}">0</strong>
+                </article>
+            </div>
+
+            <div class="mobile-acoes" sec:authorize="hasRole('ADMIN')" style="margin-top: 0.7rem;">
+                <a class="mobile-botao mobile-botao-primario" th:href="@{/cartoes/novo}">Cadastrar novo cartao</a>
+            </div>
+        </section>
+
+        <section class="mobile-cartao">
+            <h3 class="mobile-cartao-titulo">Cartoes</h3>
+
+            <div th:if="${#lists.isEmpty(cartoes)}" class="mobile-vazio">
+                Nenhum cartao cadastrado.
+            </div>
+
+            <div th:if="${!#lists.isEmpty(cartoes)}" class="mobile-lista">
+                <article class="mobile-item" th:each="cartao : ${cartoes}">
+                    <div class="mobile-item-topo">
+                        <div>
+                            <strong th:text="${@formatacaoService.cartao(cartao.numero)}">0000 0000 0000 0000</strong>
+                            <span th:text="${cartao.bandeira + ' - ' + cartao.banco}">BANDEIRA - BANCO</span>
+                        </div>
+                        <span th:if="${cartao.ativo}" class="mobile-status mobile-status-ativo">Ativo</span>
+                        <span th:if="${!cartao.ativo}" class="mobile-status mobile-status-inativo">Inativo</span>
+                    </div>
+
+                    <div class="mobile-linha-dados">
+                        <strong>Fechamento</strong>
+                        <span th:text="${cartao.diaFechamento}">0</span>
+                    </div>
+
+                    <div class="mobile-linha-dados">
+                        <strong>Vencimento</strong>
+                        <span th:text="${cartao.diaVencimento}">0</span>
+                    </div>
+
+                    <div class="mobile-acoes">
+                        <a class="mobile-botao" th:href="@{/cartoes/{id}/visualizar(id=${cartao.id})}">Visualizar</a>
+                        <a sec:authorize="hasRole('ADMIN')" class="mobile-botao"
+                           th:href="@{/cartoes/{id}/editar(id=${cartao.id})}">Editar</a>
+
+                        <form sec:authorize="hasRole('ADMIN')"
+                              th:action="@{/cartoes/{id}/desativar(id=${cartao.id})}" method="post">
+                            <button class="mobile-botao" type="submit"
+                                    data-confirm="Deseja alternar o status deste cartao?">Desativar
+                            </button>
+                        </form>
+
+                        <form sec:authorize="hasRole('ADMIN')"
+                              th:action="@{/cartoes/{id}/excluir(id=${cartao.id})}" method="post">
+                            <button class="mobile-botao mobile-botao-perigo" type="submit"
+                                    data-confirm="Confirma a exclusao definitiva deste cartao?">Excluir
+                            </button>
+                        </form>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <nav th:replace="~{fragments/mobile-rodape :: menu('cartoes')}"></nav>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

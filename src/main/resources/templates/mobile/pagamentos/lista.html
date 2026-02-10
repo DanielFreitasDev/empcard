@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/mobile-head :: headMobile('Cobrancas do Mes')}"></head>
+<body class="mobile-body">
+<div class="mobile-shell">
+    <header class="mobile-header">
+        <a class="mobile-botao-icone" th:href="@{/dashboard}" aria-label="Voltar">&#8592;</a>
+
+        <div class="mobile-header-titulo">
+            <p class="mobile-header-subtitulo">Acompanhamento mensal</p>
+            <h1>Cobrancas do mes</h1>
+        </div>
+
+        <div class="mobile-header-acoes">
+            <button id="alternadorTema" type="button" class="mobile-botao">Ativar tema escuro</button>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="mobile-link-btn">Sair</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="mobile-main">
+        <div th:replace="~{fragments/flash :: flash}"></div>
+
+        <section class="mobile-cartao">
+            <h2 class="mobile-cartao-titulo">Visao da competencia</h2>
+            <p class="mobile-cartao-subtitulo"
+               th:text="'Competencia atual: ' + ${@formatacaoService.competencia(competenciaAtual)}">Competencia</p>
+
+            <div class="mobile-kpi-grid">
+                <article class="mobile-kpi">
+                    <small>Total familiar devido</small>
+                    <strong th:text="${@formatacaoService.moeda(totalDevidoMobile)}">R$ 0,00</strong>
+                </article>
+                <article class="mobile-kpi">
+                    <small>Total em aberto</small>
+                    <strong th:text="${@formatacaoService.moeda(totalEmAbertoMobile)}">R$ 0,00</strong>
+                </article>
+                <article class="mobile-kpi">
+                    <small>Cobrancas quitadas</small>
+                    <strong th:text="${totalPagasMobile}">0</strong>
+                </article>
+                <article class="mobile-kpi">
+                    <small>Com movimento</small>
+                    <strong th:text="${#lists.size(cobrancasMobile)}">0</strong>
+                </article>
+            </div>
+
+            <div class="mobile-acoes" sec:authorize="hasRole('ADMIN')" style="margin-top: 0.7rem;">
+                <a class="mobile-botao mobile-botao-primario" th:href="@{/pagamentos/novo}">Registrar pagamento</a>
+            </div>
+        </section>
+
+        <section class="mobile-cartao">
+            <h3 class="mobile-cartao-titulo">Pessoas com cobranca</h3>
+
+            <div th:if="${#lists.isEmpty(cobrancasMobile)}" class="mobile-vazio">
+                Nenhuma cobranca encontrada para esta competencia.
+            </div>
+
+            <div th:if="${!#lists.isEmpty(cobrancasMobile)}" class="mobile-lista">
+                <article class="mobile-item" th:each="item : ${cobrancasMobile}">
+                    <div class="mobile-item-topo">
+                        <div>
+                            <strong th:text="${item.nomePessoa}">Pessoa</strong>
+                            <span>Cobranca mensal consolidada</span>
+                        </div>
+                        <span th:if="${item.saldoAberto.signum() > 0}" class="mobile-status mobile-status-aberto">Aberto</span>
+                        <span th:if="${item.saldoAberto.signum() <= 0}" class="mobile-status mobile-status-pago">Pago</span>
+                    </div>
+
+                    <div class="mobile-valores">
+                        <p>
+                            <strong>Total devido</strong>
+                            <span th:text="${@formatacaoService.moeda(item.totalDevido)}">R$ 0,00</span>
+                        </p>
+                        <p>
+                            <strong>Total pago</strong>
+                            <span th:text="${@formatacaoService.moeda(item.totalPago)}">R$ 0,00</span>
+                        </p>
+                        <p>
+                            <strong>Saldo</strong>
+                            <span th:text="${@formatacaoService.moeda(item.saldoAberto)}">R$ 0,00</span>
+                        </p>
+                    </div>
+
+                    <div class="mobile-acoes">
+                        <a class="mobile-botao"
+                           th:href="@{/relatorios/pessoas(pessoaId=${item.pessoaId}, competenciaTexto=${competenciaAtual})}">Ver analitico</a>
+                        <a sec:authorize="hasRole('ADMIN')" class="mobile-botao mobile-botao-sucesso"
+                           th:href="@{/pagamentos/novo}">Registrar pagamento</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+
+        <section class="mobile-cartao">
+            <h3 class="mobile-cartao-titulo">Pagamentos recentes</h3>
+
+            <div th:if="${#lists.isEmpty(pagamentos)}" class="mobile-vazio">
+                Nenhum pagamento registrado.
+            </div>
+
+            <div th:if="${!#lists.isEmpty(pagamentos)}" class="mobile-lista">
+                <article class="mobile-item" th:each="pagamento, iter : ${pagamentos}" th:if="${iter.index < 8}">
+                    <div class="mobile-item-topo">
+                        <div>
+                            <strong th:text="${pagamento.pessoa.nome}">Pessoa</strong>
+                            <span th:text="${@formatacaoService.cartao(pagamento.cartao.numero)}">0000</span>
+                        </div>
+                        <span th:text="${#temporals.format(pagamento.dataPagamento, 'dd/MM/yyyy')}">01/01/2026</span>
+                    </div>
+
+                    <div class="mobile-linha-dados">
+                        <strong>Valor</strong>
+                        <span th:text="${@formatacaoService.moeda(pagamento.valor)}">R$ 0,00</span>
+                    </div>
+
+                    <div class="mobile-acoes">
+                        <a class="mobile-botao" th:href="@{/pagamentos/{id}/visualizar(id=${pagamento.id})}">Visualizar</a>
+                        <a sec:authorize="hasRole('ADMIN')" class="mobile-botao"
+                           th:href="@{/pagamentos/{id}/editar(id=${pagamento.id})}">Editar</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <nav th:replace="~{fragments/mobile-rodape :: menu('pagamentos')}"></nav>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

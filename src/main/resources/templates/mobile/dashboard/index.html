@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/mobile-head :: headMobile('Dashboard Financeiro')}"></head>
+<body class="mobile-body">
+<div class="mobile-shell">
+    <header class="mobile-header">
+        <a class="mobile-botao-icone" th:href="@{/dashboard}" aria-label="Ir para dashboard">&#8962;</a>
+
+        <div class="mobile-header-titulo">
+            <p class="mobile-header-subtitulo">Painel financeiro</p>
+            <h1>Dashboard</h1>
+        </div>
+
+        <div class="mobile-header-acoes">
+            <button id="alternadorTema" type="button" class="mobile-botao">Ativar tema escuro</button>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="mobile-link-btn">Sair</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="mobile-main">
+        <div th:replace="~{fragments/flash :: flash}"></div>
+
+        <section class="mobile-cartao">
+            <h2 class="mobile-cartao-titulo">Resumo da competencia</h2>
+            <p class="mobile-cartao-subtitulo"
+               th:text="'Competencia atual: ' + ${@formatacaoService.competencia(competenciaAtual)}">Competencia</p>
+
+            <div class="mobile-kpi-grid">
+                <article class="mobile-kpi">
+                    <small>Pessoas ativas</small>
+                    <strong th:text="${totalPessoasAtivas}">0</strong>
+                </article>
+                <article class="mobile-kpi">
+                    <small>Cartoes ativos</small>
+                    <strong th:text="${totalCartoesAtivos}">0</strong>
+                </article>
+                <article class="mobile-kpi">
+                    <small>Lancamentos</small>
+                    <strong th:text="${totalLancamentos}">0</strong>
+                </article>
+                <article class="mobile-kpi">
+                    <small>Pagamentos</small>
+                    <strong th:text="${totalPagamentos}">0</strong>
+                </article>
+            </div>
+
+            <div class="mobile-valores">
+                <p>
+                    <strong>Total em aberto</strong>
+                    <span th:text="${@formatacaoService.moeda(totalEmAberto)}">R$ 0,00</span>
+                </p>
+            </div>
+
+            <div class="mobile-chips">
+                <a class="mobile-chip" th:href="@{/pessoas}">Gerenciar pessoas</a>
+                <a class="mobile-chip" th:href="@{/cartoes}">Gerenciar cartoes</a>
+                <a class="mobile-chip" th:href="@{/pagamentos}">Cobrancas do mes</a>
+                <a class="mobile-chip" th:href="@{/relatorios/pessoas}">Relatorio analitico</a>
+            </div>
+        </section>
+
+        <section class="mobile-cartao">
+            <h3 class="mobile-cartao-titulo">Maiores saldos em aberto</h3>
+            <p class="mobile-cartao-subtitulo">Top 10 pessoas para acompanhamento no mes.</p>
+
+            <div th:if="${#lists.isEmpty(rankingSaldos)}" class="mobile-vazio">
+                Nenhum saldo em aberto encontrado na competencia atual.
+            </div>
+
+            <div th:if="${!#lists.isEmpty(rankingSaldos)}" class="mobile-lista">
+                <article class="mobile-item" th:each="item : ${rankingSaldos}">
+                    <div class="mobile-item-topo">
+                        <div>
+                            <strong th:text="${item.nomePessoa}">Pessoa</strong>
+                            <span>Saldo consolidado</span>
+                        </div>
+                        <span class="mobile-status mobile-status-aberto">Aberto</span>
+                    </div>
+
+                    <div class="mobile-linha-dados">
+                        <strong>Valor</strong>
+                        <span th:text="${@formatacaoService.moeda(item.saldo)}">R$ 0,00</span>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </main>
+
+    <nav th:replace="~{fragments/mobile-rodape :: menu('dashboard')}"></nav>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>

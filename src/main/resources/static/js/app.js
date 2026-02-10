@@ -12,6 +12,7 @@
      */
     function aplicarTema(temaAtivo, botaoTema) {
         document.documentElement.setAttribute('data-tema', temaAtivo);
+        document.documentElement.classList.toggle('dark', temaAtivo === TEMA_ESCURO);
 
         if (!botaoTema) {
             return;

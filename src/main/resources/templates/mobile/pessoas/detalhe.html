@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head th:replace="~{fragments/mobile-head :: headMobile('Detalhes da Pessoa')}"></head>
+<body class="mobile-body">
+<div class="mobile-shell">
+    <header class="mobile-header">
+        <a class="mobile-botao-icone" th:href="@{/pessoas}" aria-label="Voltar">&#8592;</a>
+
+        <div class="mobile-header-titulo">
+            <p class="mobile-header-subtitulo">Consulta completa</p>
+            <h1>Detalhes da pessoa</h1>
+        </div>
+
+        <div class="mobile-header-acoes">
+            <button id="alternadorTema" type="button" class="mobile-botao">Ativar tema escuro</button>
+            <form th:action="@{/logout}" method="post">
+                <button type="submit" class="mobile-link-btn">Sair</button>
+            </form>
+        </div>
+    </header>
+
+    <main class="mobile-main">
+        <section class="mobile-cartao">
+            <h2 class="mobile-cartao-titulo" th:text="${pessoa.nome}">NOME</h2>
+            <p class="mobile-cartao-subtitulo" th:text="${@formatacaoService.cpf(pessoa.cpf)}">000.000.000-00</p>
+
+            <div class="mobile-valores">
+                <p>
+                    <strong>Status</strong>
+                    <span th:text="${pessoa.ativo ? 'ATIVO' : 'INATIVO'}">ATIVO</span>
+                </p>
+                <p>
+                    <strong>Celular</strong>
+                    <span th:text="${pessoa.celular != null && !pessoa.celular.isBlank() ? pessoa.celular : '-'}">-</span>
+                </p>
+                <p>
+                    <strong>Whatsapp</strong>
+                    <span th:text="${pessoa.whatsapp != null && !pessoa.whatsapp.isBlank() ? pessoa.whatsapp : '-'}">-</span>
+                </p>
+                <p>
+                    <strong>E-mail</strong>
+                    <span th:text="${pessoa.email != null && !pessoa.email.isBlank() ? pessoa.email : '-'}">-</span>
+                </p>
+                <p>
+                    <strong>Juros mensal</strong>
+                    <span th:text="${pessoa.jurosMensal + '%'}">0%</span>
+                </p>
+                <p>
+                    <strong>Multa atraso</strong>
+                    <span th:text="${pessoa.multaAtraso + '%'}">0%</span>
+                </p>
+            </div>
+        </section>
+
+        <section class="mobile-cartao">
+            <h3 class="mobile-cartao-titulo">Endereco</h3>
+
+            <div class="mobile-valores">
+                <p>
+                    <strong>Logradouro</strong>
+                    <span th:text="${pessoa.logradouro != null && !pessoa.logradouro.isBlank() ? pessoa.logradouro : '-'}">-</span>
+                </p>
+                <p>
+                    <strong>Numero</strong>
+                    <span th:text="${pessoa.numero != null && !pessoa.numero.isBlank() ? pessoa.numero : '-'}">-</span>
+                </p>
+                <p>
+                    <strong>Complemento</strong>
+                    <span th:text="${pessoa.complemento != null && !pessoa.complemento.isBlank() ? pessoa.complemento : '-'}">-</span>
+                </p>
+                <p>
+                    <strong>Referencia</strong>
+                    <span th:text="${pessoa.referencia != null && !pessoa.referencia.isBlank() ? pessoa.referencia : '-'}">-</span>
+                </p>
+                <p>
+                    <strong>Bairro</strong>
+                    <span th:text="${pessoa.bairro != null && !pessoa.bairro.isBlank() ? pessoa.bairro : '-'}">-</span>
+                </p>
+                <p>
+                    <strong>Cidade / UF</strong>
+                    <span th:text="${(pessoa.cidade != null ? pessoa.cidade : '-') + ' / ' + (pessoa.estado != null ? pessoa.estado : '-')}">- / -</span>
+                </p>
+                <p>
+                    <strong>CEP</strong>
+                    <span th:text="${pessoa.cep != null && !pessoa.cep.isBlank() ? pessoa.cep : '-'}">-</span>
+                </p>
+            </div>
+
+            <div class="mobile-acoes" style="margin-top: 0.65rem;">
+                <a class="mobile-botao" th:href="@{/pessoas}">Voltar</a>
+                <a sec:authorize="hasRole('ADMIN')" class="mobile-botao mobile-botao-primario"
+                   th:href="@{/pessoas/{id}/editar(id=${pessoa.id})}">Editar</a>
+            </div>
+        </section>
+    </main>
+
+    <nav th:replace="~{fragments/mobile-rodape :: menu('pessoas')}"></nav>
+</div>
+<script th:src="@{/js/app.js}"></script>
+</body>
+</html>
