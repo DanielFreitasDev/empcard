@@ -20,12 +20,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -48,14 +50,17 @@ public class PagamentoController {
      * Lista pagamentos registrados.
      *
      * @param model      modelo da tela
+     * @param competenciaTexto competencia opcional no formato yyyy-MM para consulta mensal mobile
      * @param requisicao requisicao HTTP para deteccao de layout mobile
      * @return template de listagem
      */
     @GetMapping
-    public String listar(Model model, HttpServletRequest requisicao) {
+    public String listar(Model model,
+                         @RequestParam(required = false) String competenciaTexto,
+                         HttpServletRequest requisicao) {
         model.addAttribute("pagamentos", pagamentoService.listarTodos());
 
-        YearMonth competenciaAtual = YearMonth.now();
+        YearMonth competenciaAtual = resolverCompetencia(competenciaTexto, model);
         List<ResumoCobrancaMes> cobrancasMobile = construirResumoCobrancas(competenciaAtual);
 
         BigDecimal totalDevidoMobile = cobrancasMobile.stream()
@@ -219,6 +224,29 @@ public class PagamentoController {
     private void carregarCombos(Model model) {
         model.addAttribute("pessoas", pessoaService.listarTodos());
         model.addAttribute("cartoes", cartaoService.listarTodos());
+    }
+
+    /**
+     * Resolve a competencia solicitada na tela de cobrancas com fallback seguro para o mes atual.
+     *
+     * <p>Quando o parametro vier invalido, evita quebrar a pagina e informa o usuario com
+     * uma mensagem clara para que ele possa refazer o filtro.</p>
+     *
+     * @param competenciaTexto competencia recebida via query string
+     * @param model            modelo da tela para publicar feedback de validacao
+     * @return competencia efetiva usada na consulta
+     */
+    private YearMonth resolverCompetencia(String competenciaTexto, Model model) {
+        if (competenciaTexto == null || competenciaTexto.isBlank()) {
+            return YearMonth.now();
+        }
+
+        try {
+            return YearMonth.parse(competenciaTexto);
+        } catch (DateTimeParseException ex) {
+            model.addAttribute("erro", "Competencia invalida. Utilize o formato AAAA-MM.");
+            return YearMonth.now();
+        }
     }
 
     /**

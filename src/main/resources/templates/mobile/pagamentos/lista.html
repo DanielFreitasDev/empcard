@@ -27,6 +27,28 @@
             <p class="mobile-cartao-subtitulo"
                th:text="'Competencia atual: ' + ${@formatacaoService.competencia(competenciaAtual)}">Competencia</p>
 
+            <form class="mobile-form" method="get" th:action="@{/pagamentos}" style="margin-top: 0.65rem;">
+                <div class="mobile-form-grid">
+                    <div class="mobile-form-group">
+                        <label for="competenciaTexto">Competencia</label>
+                        <input id="competenciaTexto" name="competenciaTexto" type="month" class="mobile-input"
+                               th:value="${competenciaAtual}">
+                    </div>
+                </div>
+
+                <div class="mobile-acoes">
+                    <button type="submit" class="mobile-botao mobile-botao-primario">Aplicar filtro</button>
+                    <a class="mobile-botao" th:href="@{/pagamentos}">Mes atual</a>
+                </div>
+            </form>
+
+            <div class="mobile-acoes" style="margin-top: 0.15rem;">
+                <a class="mobile-botao"
+                   th:href="@{/pagamentos(competenciaTexto=${competenciaAtual.minusMonths(1)})}">Mes anterior</a>
+                <a class="mobile-botao"
+                   th:href="@{/pagamentos(competenciaTexto=${competenciaAtual.plusMonths(1)})}">Proximo mes</a>
+            </div>
+
             <div class="mobile-kpi-grid">
                 <article class="mobile-kpi">
                     <small>Total familiar devido</small>
